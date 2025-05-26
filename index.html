@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Framing - Coming Soon</title>
+    <title>TEAM FRAMING</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
@@ -258,8 +258,9 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero-section {
-                align-items: center;
-                padding: 2vh 0;
+                align-items: center !important;
+                padding: 0 !important;
+                justify-content: center !important;
             }
 
             .main-title {
@@ -287,8 +288,9 @@
 
         @media (max-width: 480px) {
             .hero-section {
-                align-items: center;
-                padding: 1vh 0;
+                align-items: center !important;
+                padding: 0 !important;
+                justify-content: center !important;
             }
 
             .main-title {
@@ -317,58 +319,10 @@
                 font-size: 1.5rem;
             }
         }
-        /* 음악 시작 오버레이 */
-        .music-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-        }
 
-        .music-start-btn {
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            color: #000;
-            border: none;
-            padding: 2rem 3rem;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
-        }
-
-        .music-start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
-        }
-
-        .music-start-btn svg {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
     </style>
 </head>
 <body>
-    <!-- 음악 시작 오버레이 -->
-    <div class="music-overlay" id="musicOverlay">
-        <button class="music-start-btn" id="musicStartBtn">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-            </svg>
-            음악과 함께 시작하기
-        </button>
-    </div>
-    
     <!-- Top Right Controls -->
     <div class="top-controls">
         <button class="music-control" id="musicToggle">
@@ -637,32 +591,8 @@
             });
         }
 
-        // 음악 시작 오버레이 처리
-        function initMusicOverlay() {
-            const musicOverlay = document.getElementById('musicOverlay');
-            const musicStartBtn = document.getElementById('musicStartBtn');
-            const backgroundMusic = document.getElementById('backgroundMusic');
-            const playIcon = document.getElementById('playIcon');
-            const pauseIcon = document.getElementById('pauseIcon');
-            
-            musicStartBtn.addEventListener('click', function() {
-                backgroundMusic.volume = 0.1;
-                backgroundMusic.play().then(function() {
-                    // 음악 재생 성공
-                    playIcon.style.display = 'none';
-                    pauseIcon.style.display = 'block';
-                    musicOverlay.style.display = 'none';
-                    console.log('🎵 음악 시작!');
-                }).catch(function(error) {
-                    console.log('음악 재생 실패:', error);
-                    musicOverlay.style.display = 'none'; // 실패해도 오버레이는 제거
-                });
-            });
-        }
-
         // 페이지 로드 시 모든 기능 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            initMusicOverlay();
             typeText();
             updateCountdown();
             initMusicControl();
