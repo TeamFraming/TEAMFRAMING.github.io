@@ -317,21 +317,57 @@
                 font-size: 1.5rem;
             }
         }
+        /* 음악 시작 오버레이 */
+        .music-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .music-start-btn {
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            color: #000;
+            border: none;
+            padding: 2rem 3rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .music-start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+        }
+
+        .music-start-btn svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
-    <script>
-        // 즉시 음악 재생 시도 (DOM 로드 전에도)
-        document.addEventListener('DOMContentLoaded', function() {
-            const audio = document.getElementById('backgroundMusic');
-            if (audio) {
-                audio.volume = 0.1;
-                audio.play().catch(function(e) {
-                    console.log('즉시 재생 실패, 사용자 이벤트 대기');
-                });
-            }
-        });
-    </script>
+    <!-- 음악 시작 오버레이 -->
+    <div class="music-overlay" id="musicOverlay">
+        <button class="music-start-btn" id="musicStartBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            음악과 함께 시작하기
+        </button>
+    </div>
     
     <!-- Top Right Controls -->
     <div class="top-controls">
@@ -513,63 +549,9 @@
             const playIcon = document.getElementById('playIcon');
             const pauseIcon = document.getElementById('pauseIcon');
             let isPlaying = false;
-            let musicStarted = false;
 
             // 볼륨 설정
             backgroundMusic.volume = 0.1;
-
-            // 음악 재생 함수
-            function playMusic() {
-                if (musicStarted) return;
-                
-                backgroundMusic.muted = false;
-                const playPromise = backgroundMusic.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(function() {
-                        playIcon.style.display = 'none';
-                        pauseIcon.style.display = 'block';
-                        isPlaying = true;
-                        musicStarted = true;
-                        console.log('🎵 음악 재생 성공!');
-                    }).catch(function(error) {
-                        console.log('음악 재생 실패:', error);
-                        playIcon.style.display = 'block';
-                        pauseIcon.style.display = 'none';
-                        isPlaying = false;
-                    });
-                }
-            }
-
-            // 모든 가능한 이벤트에 음악 재생 연결
-            const events = [
-                'click', 'mousedown', 'mouseup', 'mouseover',
-                'touchstart', 'touchend', 'touchmove',
-                'keydown', 'keyup', 'scroll', 'mousemove',
-                'pointerdown', 'pointerup'
-            ];
-
-            events.forEach(function(event) {
-                document.addEventListener(event, function() {
-                    if (!musicStarted) {
-                        playMusic();
-                    }
-                }, { once: true, passive: true });
-            });
-
-            // 페이지 포커스 시에도 시도
-            window.addEventListener('focus', function() {
-                if (!musicStarted) {
-                    setTimeout(playMusic, 100);
-                }
-            });
-
-            // 즉시 시도 (여러 번)
-            setTimeout(playMusic, 0);
-            setTimeout(playMusic, 100);
-            setTimeout(playMusic, 500);
-            setTimeout(playMusic, 1000);
-            setTimeout(playMusic, 2000);
 
             // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
 
@@ -655,8 +637,32 @@
             });
         }
 
+        // 음악 시작 오버레이 처리
+        function initMusicOverlay() {
+            const musicOverlay = document.getElementById('musicOverlay');
+            const musicStartBtn = document.getElementById('musicStartBtn');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const playIcon = document.getElementById('playIcon');
+            const pauseIcon = document.getElementById('pauseIcon');
+            
+            musicStartBtn.addEventListener('click', function() {
+                backgroundMusic.volume = 0.1;
+                backgroundMusic.play().then(function() {
+                    // 음악 재생 성공
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                    musicOverlay.style.display = 'none';
+                    console.log('🎵 음악 시작!');
+                }).catch(function(error) {
+                    console.log('음악 재생 실패:', error);
+                    musicOverlay.style.display = 'none'; // 실패해도 오버레이는 제거
+                });
+            });
+        }
+
         // 페이지 로드 시 모든 기능 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            initMusicOverlay();
             typeText();
             updateCountdown();
             initMusicControl();
