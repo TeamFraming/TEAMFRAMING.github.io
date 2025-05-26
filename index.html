@@ -367,10 +367,9 @@
     </div>
 
     <!-- Audio Element -->
-    <audio id="backgroundMusic" loop autoplay preload="auto" muted>
+    <audio id="backgroundMusic" loop preload="auto">
         <source src="MUSIC/sunflower.mp3" type="audio/mpeg">
-        <source src="MUSIC/sunflower.wav" type="audio/wav">
-        <source src="MUSIC/sunflower.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
     </audio>
     <div class="hero-section">
         <div class="container">
@@ -511,6 +510,24 @@
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
 
+            // 음악 파일 로드 상태 확인
+            backgroundMusic.addEventListener('loadstart', function() {
+                console.log('🔄 음악 파일 로드 시작');
+            });
+
+            backgroundMusic.addEventListener('canplay', function() {
+                console.log('✅ 음악 파일 재생 가능');
+            });
+
+            backgroundMusic.addEventListener('error', function(e) {
+                console.error('❌ 음악 파일 로드 에러:', e);
+                console.log('에러 코드:', backgroundMusic.error);
+            });
+
+            backgroundMusic.addEventListener('loadeddata', function() {
+                console.log('📁 음악 파일 데이터 로드 완료');
+            });
+
             // 음악 재생/멈춤 토글
             musicToggle.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -527,14 +544,20 @@
                     console.log('🔇 음악 멈춤');
                 } else {
                     // 음악 재생
+                    console.log('🎵 음악 재생 시도 중...');
+                    console.log('음악 파일 경로:', backgroundMusic.src);
+                    console.log('음악 파일 준비상태:', backgroundMusic.readyState);
+                    
                     backgroundMusic.play().then(function() {
                         playIcon.style.display = 'none';
                         pauseIcon.style.display = 'block';
                         isPlaying = true;
-                        console.log('🎵 음악 재생');
+                        console.log('🎵 음악 재생 성공!');
                     }).catch(function(error) {
-                        console.log('음악 재생 실패:', error);
-                        alert('음악 재생에 실패했습니다. 브라우저 설정을 확인해주세요.');
+                        console.error('❌ 음악 재생 실패:', error);
+                        console.log('현재 볼륨:', backgroundMusic.volume);
+                        console.log('음악 파일 길이:', backgroundMusic.duration);
+                        alert('음악 재생 실패: ' + error.message);
                     });
                 }
             });
