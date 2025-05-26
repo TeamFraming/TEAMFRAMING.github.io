@@ -503,8 +503,8 @@
             const pauseIcon = document.getElementById('pauseIcon');
             let isPlaying = false;
 
-            // 볼륨 설정
-            backgroundMusic.volume = 0.1;
+            // 볼륨 설정 (더 크게)
+            backgroundMusic.volume = 0.3;
 
             // 초기 상태 설정
             playIcon.style.display = 'block';
@@ -543,22 +543,48 @@
                     isPlaying = false;
                     console.log('🔇 음악 멈춤');
                 } else {
-                    // 음악 재생
+                    // 음악 재생 - 강제 시도
                     console.log('🎵 음악 재생 시도 중...');
                     console.log('음악 파일 경로:', backgroundMusic.src);
                     console.log('음악 파일 준비상태:', backgroundMusic.readyState);
                     
-                    backgroundMusic.play().then(function() {
-                        playIcon.style.display = 'none';
-                        pauseIcon.style.display = 'block';
-                        isPlaying = true;
-                        console.log('🎵 음악 재생 성공!');
-                    }).catch(function(error) {
-                        console.error('❌ 음악 재생 실패:', error);
-                        console.log('현재 볼륨:', backgroundMusic.volume);
-                        console.log('음악 파일 길이:', backgroundMusic.duration);
-                        alert('음악 재생 실패: ' + error.message);
-                    });
+                    // 볼륨 다시 설정
+                    backgroundMusic.volume = 0.3;
+                    
+                    // 현재 시간 0으로 리셋
+                    backgroundMusic.currentTime = 0;
+                    
+                    // 강제 재생
+                    const playPromise = backgroundMusic.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(function() {
+                            playIcon.style.display = 'none';
+                            pauseIcon.style.display = 'block';
+                            isPlaying = true;
+                            console.log('🎵 음악 재생 성공!');
+                        }).catch(function(error) {
+                            console.error('❌ 음악 재생 실패:', error);
+                            console.log('현재 볼륨:', backgroundMusic.volume);
+                            console.log('음악 파일 길이:', backgroundMusic.duration);
+                            console.log('음악 파일 상태:', backgroundMusic.networkState);
+                            
+                            // 새로운 시도: 음악 파일 다시 로드
+                            backgroundMusic.load();
+                            
+                            setTimeout(function() {
+                                backgroundMusic.play().then(function() {
+                                    playIcon.style.display = 'none';
+                                    pauseIcon.style.display = 'block';
+                                    isPlaying = true;
+                                    console.log('🎵 재시도 후 음악 재생 성공!');
+                                }).catch(function(retryError) {
+                                    console.error('❌ 재시도도 실패:', retryError);
+                                    alert('음악 재생 실패: ' + retryError.message + '\n브라우저에서 자동재생이 차단되었을 수 있습니다.');
+                                });
+                            }, 500);
+                        });
+                    }
                 }
             });
 
