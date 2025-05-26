@@ -495,7 +495,7 @@
             }, 1000);
         }
 
-        // 음악 재생/멀춤 기능
+        // 음악 재생/멈춤 기능 (간단하게)
         function initMusicControl() {
             const musicToggle = document.getElementById('musicToggle');
             const backgroundMusic = document.getElementById('backgroundMusic');
@@ -503,30 +503,12 @@
             const pauseIcon = document.getElementById('pauseIcon');
             let isPlaying = false;
 
-            // 볼륨 설정 (더 크게)
-            backgroundMusic.volume = 0.3;
+            // 볼륨 설정
+            backgroundMusic.volume = 0.2;
 
             // 초기 상태 설정
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
-
-            // 음악 파일 로드 상태 확인
-            backgroundMusic.addEventListener('loadstart', function() {
-                console.log('🔄 음악 파일 로드 시작');
-            });
-
-            backgroundMusic.addEventListener('canplay', function() {
-                console.log('✅ 음악 파일 재생 가능');
-            });
-
-            backgroundMusic.addEventListener('error', function(e) {
-                console.error('❌ 음악 파일 로드 에러:', e);
-                console.log('에러 코드:', backgroundMusic.error);
-            });
-
-            backgroundMusic.addEventListener('loadeddata', function() {
-                console.log('📁 음악 파일 데이터 로드 완료');
-            });
 
             // 음악 재생/멈춤 토글
             musicToggle.addEventListener('click', function(e) {
@@ -543,54 +525,23 @@
                     isPlaying = false;
                     console.log('🔇 음악 멈춤');
                 } else {
-                    // 음악 재생 - 강제 시도
-                    console.log('🎵 음악 재생 시도 중...');
-                    console.log('음악 파일 경로:', backgroundMusic.src);
-                    console.log('음악 파일 준비상태:', backgroundMusic.readyState);
+                    // 음악 재생 (간단하게)
+                    console.log('🎵 음악 재생 시도...');
+                    backgroundMusic.currentTime = 0; // 처음부터 재생
                     
-                    // 볼륨 다시 설정
-                    backgroundMusic.volume = 0.3;
-                    
-                    // 현재 시간 0으로 리셋
-                    backgroundMusic.currentTime = 0;
-                    
-                    // 강제 재생
-                    const playPromise = backgroundMusic.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise.then(function() {
-                            playIcon.style.display = 'none';
-                            pauseIcon.style.display = 'block';
-                            isPlaying = true;
-                            console.log('🎵 음악 재생 성공!');
-                        }).catch(function(error) {
-                            console.error('❌ 음악 재생 실패:', error);
-                            console.log('현재 볼륨:', backgroundMusic.volume);
-                            console.log('음악 파일 길이:', backgroundMusic.duration);
-                            console.log('음악 파일 상태:', backgroundMusic.networkState);
-                            
-                            // 새로운 시도: 음악 파일 다시 로드
-                            backgroundMusic.load();
-                            
-                            setTimeout(function() {
-                                backgroundMusic.play().then(function() {
-                                    playIcon.style.display = 'none';
-                                    pauseIcon.style.display = 'block';
-                                    isPlaying = true;
-                                    console.log('🎵 재시도 후 음악 재생 성공!');
-                                }).catch(function(retryError) {
-                                    console.error('❌ 재시도도 실패:', retryError);
-                                    alert('음악 재생 실패: ' + retryError.message + '\n브라우저에서 자동재생이 차단되었을 수 있습니다.');
-                                });
-                            }, 500);
-                        });
-                    }
+                    backgroundMusic.play().then(function() {
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                        isPlaying = true;
+                        console.log('🎵 음악 재생 성공!');
+                    }).catch(function(error) {
+                        console.error('❌ 음악 재생 실패:', error);
+                        alert('음악 재생 실패: ' + error.message);
+                    });
                 }
             });
 
-            // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
-
-            // 음악이 실제로 재생되고 있는지 확인
+            // 음악 상태 동기화
             backgroundMusic.addEventListener('play', function() {
                 playIcon.style.display = 'none';
                 pauseIcon.style.display = 'block';
@@ -637,21 +588,7 @@
             initOutsideClick();
         });
 
-        // 추가로 window load에서도 음악 시도
-        window.addEventListener('load', function() {
-            const backgroundMusic = document.getElementById('backgroundMusic');
-            if (backgroundMusic && backgroundMusic.paused) {
-                backgroundMusic.muted = true;
-                backgroundMusic.play().then(function() {
-                    setTimeout(function() {
-                        backgroundMusic.muted = false;
-                        console.log('🎵 Window load에서 음악 재생!');
-                    }, 300);
-                }).catch(function(e) {
-                    console.log('Window load 음악 재생 실패:', e);
-                });
-            }
-        });
+
     </script>
 </body>
 </html> 
