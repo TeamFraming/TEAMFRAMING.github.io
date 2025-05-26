@@ -462,11 +462,10 @@
             typeFirst();
         }
 
-        // 카운트다운 타이머 (현재 시간 + 28일)
+        // 카운트다운 타이머 (고정된 미래 날짜)
         function updateCountdown() {
-            // 현재 시간 + 28일로 계산
-            const now = new Date();
-            const countDownDate = new Date(now.getTime() + (28 * 24 * 60 * 60 * 1000));
+            // 2025년 6월 25일로 설정 (약 28일 후)
+            const countDownDate = new Date('2025-06-25T00:00:00');
             
             console.log('카운트다운 종료일:', countDownDate.toLocaleString());
             
@@ -500,22 +499,48 @@
             const pauseIcon = document.getElementById('pauseIcon');
             let isPlaying = true; // 자동재생이므로 초기값 true
 
-            // 초기 볼륨 설정 (30%)
+            // 초기 볼륨 설정 (10%)
             backgroundMusic.volume = 0.1;
 
-            // 자동재생 시도
-            backgroundMusic.play().then(function() {
-                // 재생 성공
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                isPlaying = true;
-            }).catch(function(error) {
-                // 자동재생 실패 (브라우저 정책)
-                console.log('자동재생 차단됨. 사용자 클릭 필요.');
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-                isPlaying = false;
-            });
+            // 강력한 자동재생 시도
+            function tryAutoplay() {
+                backgroundMusic.play().then(function() {
+                    // 재생 성공
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                    isPlaying = true;
+                    console.log('음악 자동재생 성공!');
+                }).catch(function(error) {
+                    // 자동재생 실패 시 사용자 상호작용 후 재시도
+                    console.log('자동재생 차단됨. 클릭 후 재생 대기...');
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                    isPlaying = false;
+                    
+                    // 페이지 클릭 시 음악 재생
+                    function playOnInteraction() {
+                        backgroundMusic.play().then(function() {
+                            playIcon.style.display = 'none';
+                            pauseIcon.style.display = 'block';
+                            isPlaying = true;
+                            console.log('사용자 상호작용 후 음악 재생!');
+                            document.removeEventListener('click', playOnInteraction);
+                            document.removeEventListener('touchstart', playOnInteraction);
+                        }).catch(function(err) {
+                            console.log('음악 재생 실패:', err);
+                        });
+                    }
+                    
+                    document.addEventListener('click', playOnInteraction);
+                    document.addEventListener('touchstart', playOnInteraction);
+                });
+            }
+            
+            // 즉시 재생 시도
+            tryAutoplay();
+            
+            // 0.5초 후 재시도
+            setTimeout(tryAutoplay, 500);
 
             // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
 
