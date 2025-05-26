@@ -258,7 +258,8 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero-section {
-                padding-bottom: 6vh;
+                align-items: center;
+                padding: 2vh 0;
             }
 
             .main-title {
@@ -286,7 +287,8 @@
 
         @media (max-width: 480px) {
             .hero-section {
-                padding-bottom: 4vh;
+                align-items: center;
+                padding: 1vh 0;
             }
 
             .main-title {
@@ -345,7 +347,7 @@
             </svg>
             <div class="github-info">
                 <div class="github-name">LogicSurgeon</div>
-                <div class="github-role">Orthopedic sergion
+                <div class="github-role">Orthopedic surgion
             
                 </div>
             </div>
@@ -362,7 +364,7 @@
     </div>
 
     <!-- Audio Element -->
-    <audio id="backgroundMusic" loop autoplay volume="0.3">
+    <audio id="backgroundMusic" loop autoplay preload="auto" volume="0.1">
         <source src="MUSIC/sunflower.mp3" type="audio/mpeg">
         <source src="MUSIC/sunflower.wav" type="audio/wav">
         <source src="MUSIC/sunflower.ogg" type="audio/ogg">
@@ -497,50 +499,47 @@
             const backgroundMusic = document.getElementById('backgroundMusic');
             const playIcon = document.getElementById('playIcon');
             const pauseIcon = document.getElementById('pauseIcon');
-            let isPlaying = true; // 자동재생이므로 초기값 true
+            let isPlaying = false; // 초기값 false
 
             // 초기 볼륨 설정 (10%)
             backgroundMusic.volume = 0.1;
 
-            // 강력한 자동재생 시도
-            function tryAutoplay() {
-                backgroundMusic.play().then(function() {
-                    // 재생 성공
-                    playIcon.style.display = 'none';
-                    pauseIcon.style.display = 'block';
-                    isPlaying = true;
-                    console.log('음악 자동재생 성공!');
-                }).catch(function(error) {
-                    // 자동재생 실패 시 사용자 상호작용 후 재시도
-                    console.log('자동재생 차단됨. 클릭 후 재생 대기...');
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
-                    isPlaying = false;
-                    
-                    // 페이지 클릭 시 음악 재생
-                    function playOnInteraction() {
-                        backgroundMusic.play().then(function() {
-                            playIcon.style.display = 'none';
-                            pauseIcon.style.display = 'block';
-                            isPlaying = true;
-                            console.log('사용자 상호작용 후 음악 재생!');
-                            document.removeEventListener('click', playOnInteraction);
-                            document.removeEventListener('touchstart', playOnInteraction);
-                        }).catch(function(err) {
-                            console.log('음악 재생 실패:', err);
-                        });
-                    }
-                    
-                    document.addEventListener('click', playOnInteraction);
-                    document.addEventListener('touchstart', playOnInteraction);
+            // 즉시 재생 시도하는 함수
+            function forcePlay() {
+                const playPromise = backgroundMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                        isPlaying = true;
+                        console.log('🎵 음악 재생 성공!');
+                    }).catch(function(error) {
+                        console.log('⚠️ 자동재생 차단됨:', error);
+                        playIcon.style.display = 'block';
+                        pauseIcon.style.display = 'none';
+                        isPlaying = false;
+                    });
+                }
+            }
+
+            // 다양한 이벤트에서 음악 재생 시도
+            const events = ['click', 'touchstart', 'mousedown', 'keydown', 'scroll'];
+            
+            function tryPlayOnce() {
+                forcePlay();
+                events.forEach(event => {
+                    document.removeEventListener(event, tryPlayOnce);
                 });
             }
-            
-            // 즉시 재생 시도
-            tryAutoplay();
-            
-            // 0.5초 후 재시도
-            setTimeout(tryAutoplay, 500);
+
+            events.forEach(event => {
+                document.addEventListener(event, tryPlayOnce, { once: true });
+            });
+
+            // 페이지 로드 후 즉시 시도
+            setTimeout(forcePlay, 100);
+            setTimeout(forcePlay, 500);
+            setTimeout(forcePlay, 1000);
 
             // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
 
