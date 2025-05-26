@@ -364,7 +364,7 @@
     </div>
 
     <!-- Audio Element -->
-    <audio id="backgroundMusic" loop autoplay preload="auto" volume="0.1">
+    <audio id="backgroundMusic" loop autoplay preload="auto" muted>
         <source src="MUSIC/sunflower.mp3" type="audio/mpeg">
         <source src="MUSIC/sunflower.wav" type="audio/wav">
         <source src="MUSIC/sunflower.ogg" type="audio/ogg">
@@ -499,47 +499,63 @@
             const backgroundMusic = document.getElementById('backgroundMusic');
             const playIcon = document.getElementById('playIcon');
             const pauseIcon = document.getElementById('pauseIcon');
-            let isPlaying = false; // 초기값 false
+            let isPlaying = false;
 
-            // 초기 볼륨 설정 (10%)
+            // 볼륨 설정
             backgroundMusic.volume = 0.1;
 
-            // 즉시 재생 시도하는 함수
-            function forcePlay() {
+            // 무음으로 시작해서 재생 후 음소거 해제하는 함수
+            function startMusic() {
+                backgroundMusic.muted = true;
                 const playPromise = backgroundMusic.play();
+                
                 if (playPromise !== undefined) {
                     playPromise.then(function() {
-                        playIcon.style.display = 'none';
-                        pauseIcon.style.display = 'block';
-                        isPlaying = true;
-                        console.log('🎵 음악 재생 성공!');
+                        // 재생 성공하면 0.5초 후 음소거 해제
+                        setTimeout(function() {
+                            backgroundMusic.muted = false;
+                            playIcon.style.display = 'none';
+                            pauseIcon.style.display = 'block';
+                            isPlaying = true;
+                            console.log('🎵 음악 바로 재생 성공!');
+                        }, 500);
                     }).catch(function(error) {
-                        console.log('⚠️ 자동재생 차단됨:', error);
+                        console.log('⚠️ 자동재생 실패:', error);
                         playIcon.style.display = 'block';
                         pauseIcon.style.display = 'none';
                         isPlaying = false;
+                        
+                        // 실패하면 사용자 이벤트 대기
+                        enableUserInteraction();
                     });
                 }
             }
 
-            // 다양한 이벤트에서 음악 재생 시도
-            const events = ['click', 'touchstart', 'mousedown', 'keydown', 'scroll'];
-            
-            function tryPlayOnce() {
-                forcePlay();
-                events.forEach(event => {
-                    document.removeEventListener(event, tryPlayOnce);
-                });
+            // 사용자 상호작용 대기
+            function enableUserInteraction() {
+                function playOnTouch() {
+                    backgroundMusic.muted = false;
+                    backgroundMusic.play().then(function() {
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                        isPlaying = true;
+                        console.log('🎵 터치 후 음악 재생!');
+                        // 이벤트 리스너 제거
+                        document.removeEventListener('click', playOnTouch);
+                        document.removeEventListener('touchstart', playOnTouch);
+                        document.removeEventListener('keydown', playOnTouch);
+                    }).catch(function(err) {
+                        console.log('음악 재생 실패:', err);
+                    });
+                }
+                
+                document.addEventListener('click', playOnTouch);
+                document.addEventListener('touchstart', playOnTouch);
+                document.addEventListener('keydown', playOnTouch);
             }
 
-            events.forEach(event => {
-                document.addEventListener(event, tryPlayOnce, { once: true });
-            });
-
-            // 페이지 로드 후 즉시 시도
-            setTimeout(forcePlay, 100);
-            setTimeout(forcePlay, 500);
-            setTimeout(forcePlay, 1000);
+            // 즉시 음악 시작 시도
+            startMusic();
 
             // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
 
@@ -626,13 +642,29 @@
         }
 
         // 페이지 로드 시 모든 기능 초기화
-        window.addEventListener('load', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             typeText();
             updateCountdown();
             initMusicControl();
             initGithubDropdown();
             initMusicControlExtended();
             initOutsideClick();
+        });
+
+        // 추가로 window load에서도 음악 시도
+        window.addEventListener('load', function() {
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            if (backgroundMusic && backgroundMusic.paused) {
+                backgroundMusic.muted = true;
+                backgroundMusic.play().then(function() {
+                    setTimeout(function() {
+                        backgroundMusic.muted = false;
+                        console.log('🎵 Window load에서 음악 재생!');
+                    }, 300);
+                }).catch(function(e) {
+                    console.log('Window load 음악 재생 실패:', e);
+                });
+            }
         });
     </script>
 </body>
