@@ -496,7 +496,7 @@
             }, 1000);
         }
 
-        // 음악 재생/멈춤 기능
+        // 음악 재생/멀춤 기능
         function initMusicControl() {
             const musicToggle = document.getElementById('musicToggle');
             const backgroundMusic = document.getElementById('backgroundMusic');
@@ -506,6 +506,38 @@
 
             // 볼륨 설정
             backgroundMusic.volume = 0.1;
+
+            // 초기 상태 설정
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+
+            // 음악 재생/멈춤 토글
+            musicToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // GitHub 드롭다운이 열려있으면 닫기
+                document.getElementById('githubDropdown').classList.remove('show');
+                
+                if (isPlaying) {
+                    // 음악 멈춤
+                    backgroundMusic.pause();
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                    isPlaying = false;
+                    console.log('🔇 음악 멈춤');
+                } else {
+                    // 음악 재생
+                    backgroundMusic.play().then(function() {
+                        playIcon.style.display = 'none';
+                        pauseIcon.style.display = 'block';
+                        isPlaying = true;
+                        console.log('🎵 음악 재생');
+                    }).catch(function(error) {
+                        console.log('음악 재생 실패:', error);
+                        alert('음악 재생에 실패했습니다. 브라우저 설정을 확인해주세요.');
+                    });
+                }
+            });
 
             // 음악 재생/멈춤은 별도 핸들러에서 처리하지 않음 (볼륨 컨트롤 표시용)
 
@@ -538,51 +570,7 @@
 
 
 
-        // 음악 재생/멈춤 기능만
-        function initMusicControlExtended() {
-            const musicToggle = document.getElementById('musicToggle');
-            const backgroundMusic = document.getElementById('backgroundMusic');
-            const playIcon = document.getElementById('playIcon');
-            const pauseIcon = document.getElementById('pauseIcon');
-            let isPlaying = true;
-            
-            // 음악 버튼 클릭 시 재생/멈춤만
-            musicToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                // 깃허브 드롭다운이 열려있으면 닫기
-                document.getElementById('githubDropdown').classList.remove('show');
-                
-                // 음악 재생/멈춤
-                if (isPlaying) {
-                    backgroundMusic.pause();
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
-                    isPlaying = false;
-                } else {
-                    backgroundMusic.play().then(function() {
-                        playIcon.style.display = 'none';
-                        pauseIcon.style.display = 'block';
-                        isPlaying = true;
-                    }).catch(function(error) {
-                        console.log('음악 재생 실패:', error);
-                    });
-                }
-            });
-            
-            // 음악 상태 동기화
-            backgroundMusic.addEventListener('play', function() {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                isPlaying = true;
-            });
 
-            backgroundMusic.addEventListener('pause', function() {
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-                isPlaying = false;
-            });
-        }
 
         // 외부 클릭 시 드롭다운 닫기
         function initOutsideClick() {
@@ -597,7 +585,6 @@
             updateCountdown();
             initMusicControl();
             initGithubDropdown();
-            initMusicControlExtended();
             initOutsideClick();
         });
 
