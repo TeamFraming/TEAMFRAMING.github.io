@@ -985,7 +985,7 @@ footer{
 
 // ─── CARD SPOTLIGHT ───
 (function(){
-  document.querySelectorAll('.feat-card').forEach(card => {
+  document.querySelectorAll('.feat-card, .flow-step').forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
