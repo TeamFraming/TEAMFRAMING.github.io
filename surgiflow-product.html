@@ -203,7 +203,7 @@ h1.hero-title em{
   background:#000;padding:56px 48px;
   transition:background 0.4s;
 }
-.problem-card:hover{background:#0a0a0a;}
+.problem-card:hover{}
 .pc-tag{
   font-size:0.6rem;font-weight:600;letter-spacing:0.2em;
   text-transform:uppercase;
@@ -258,7 +258,7 @@ h1.hero-title em{
   background:linear-gradient(90deg,transparent,rgba(79,142,247,0),transparent);
   transition:background 0.4s;
 }
-.feat-card:hover{background:#060a14;}
+.feat-card:hover{}
 .feat-card:hover::after{
   background:linear-gradient(90deg,transparent,rgba(79,142,247,0.4),transparent);
 }
@@ -335,7 +335,7 @@ h1.hero-title em{
   background:#000;padding:56px 40px;
   transition:background 0.3s;
 }
-.prod-card:hover{background:#080808;}
+.prod-card:hover{}
 .prod-idx{
   font-size:0.6rem;font-weight:600;
   letter-spacing:0.2em;text-transform:uppercase;
@@ -985,7 +985,7 @@ footer{
 
 // ─── CARD SPOTLIGHT ───
 (function(){
-  document.querySelectorAll('.feat-card, .flow-step').forEach(card => {
+  document.querySelectorAll('.feat-card, .flow-step, .problem-card, .prod-card, .mnum-card, .phase-row').forEach(card => {
     card.addEventListener('mousemove', e => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
