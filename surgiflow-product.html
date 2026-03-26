@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Surgiflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --black:#000000;
+  --white:#ffffff;
+  --gray1:#111111;
+  --gray2:#1a1a1a;
+  --gray3:#333333;
+  --gray4:#666666;
+  --gray5:#999999;
+  --blue:#4f8ef7;
+  --blue-dim:rgba(79,142,247,0.12);
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:'Noto Sans KR','Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:#000;}
+::-webkit-scrollbar-thumb{background:#333;}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 60px;
+  mix-blend-mode:difference;
+}
+.nav-logo{
+  font-size:1rem;font-weight:800;letter-spacing:0.2em;
+  text-transform:uppercase;color:#fff;text-decoration:none;
+}
+.nav-right{
+  display:flex;align-items:center;gap:40px;
+}
+.nav-link{
+  font-size:0.72rem;font-weight:400;letter-spacing:0.12em;
+  text-transform:uppercase;color:rgba(255,255,255,0.5);
+  text-decoration:none;transition:color 0.2s;
+}
+.nav-link:hover{color:#fff;}
+.nav-tag{
+  font-size:0.65rem;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:#000;
+  background:#fff;padding:5px 14px;border-radius:2px;
+}
+
+/* ─── CANVAS BG ─── */
+#particle-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:0.4;
+}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 60px 80px;
+}
+.hero-top{
+  position:absolute;top:50%;left:60px;
+  transform:translateY(-50%);
+  max-width:800px;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:0.85rem;font-weight:400;letter-spacing:0.14em;
+  text-transform:uppercase;color:rgba(255,255,255,0.5);
+  margin-bottom:40px;
+}
+.hero-eyebrow::before{
+  content:'';display:block;
+  width:32px;height:1px;background:rgba(255,255,255,0.25);
+}
+h1.hero-title{
+  font-size:clamp(3.5rem,8vw,7rem);
+  font-weight:900;
+  letter-spacing:-0.04em;
+  line-height:0.95;
+  color:#fff;
+  margin-bottom:40px;
+}
+h1.hero-title em{
+  font-style:normal;
+  -webkit-text-stroke:1px rgba(255,255,255,0.3);
+  color:transparent;
+}
+.hero-desc{
+  font-size:1rem;font-weight:300;
+  color:rgba(255,255,255,0.45);
+  max-width:440px;line-height:1.8;
+  letter-spacing:0.01em;
+}
+.hero-bottom{
+  display:flex;align-items:flex-end;
+  justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:32px;
+  position:relative;z-index:1;
+}
+.hero-stat-row{display:flex;gap:60px;}
+.hero-stat-item{}
+.hero-stat-num{
+  font-size:1.8rem;font-weight:800;
+  letter-spacing:-0.03em;color:#fff;
+  line-height:1;
+}
+.hero-stat-label{
+  font-size:0.65rem;font-weight:400;
+  color:rgba(255,255,255,0.3);letter-spacing:0.1em;
+  text-transform:uppercase;margin-top:4px;
+}
+.hero-scroll{
+  font-size:0.65rem;letter-spacing:0.15em;
+  text-transform:uppercase;color:rgba(255,255,255,0.25);
+  display:flex;align-items:center;gap:12px;
+}
+.hero-scroll::after{
+  content:'';display:block;
+  width:40px;height:1px;background:rgba(255,255,255,0.15);
+}
+
+/* ─── SECTION BASE ─── */
+.section{
+  position:relative;z-index:1;
+  padding:160px 60px;
+}
+.section-inner{max-width:1200px;margin:0 auto;}
+
+/* ─── REVEAL ANIM ─── */
+.reveal{
+  opacity:0;transform:translateY(40px);
+  transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),
+              transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-d1{transition-delay:0.1s;}
+.reveal-d2{transition-delay:0.2s;}
+.reveal-d3{transition-delay:0.3s;}
+.reveal-d4{transition-delay:0.4s;}
+
+/* ─── LABEL ─── */
+.label{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:0.65rem;font-weight:500;letter-spacing:0.2em;
+  text-transform:uppercase;color:rgba(255,255,255,0.3);
+  margin-bottom:28px;
+}
+.label::before{
+  content:'';width:20px;height:1px;
+  background:rgba(255,255,255,0.25);
+}
+
+/* ─── BIG HEADING ─── */
+.big-heading{
+  font-size:clamp(2.2rem,5vw,4rem);
+  font-weight:800;letter-spacing:-0.03em;
+  line-height:1.05;color:#fff;
+}
+.big-heading .dim{color:rgba(255,255,255,0.2);}
+
+/* ─── DIVIDER ─── */
+.h-line{
+  width:100%;height:1px;
+  background:rgba(255,255,255,0.06);
+  position:relative;z-index:1;
+}
+
+/* ─── PROBLEM ─── */
+.problem-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.06);
+  margin-top:80px;
+}
+.problem-card{
+  background:#000;padding:56px 48px;
+  transition:background 0.4s;
+}
+.problem-card:hover{background:#0a0a0a;}
+.pc-tag{
+  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.25);margin-bottom:32px;
+}
+.pc-title{
+  font-size:1.5rem;font-weight:700;
+  letter-spacing:-0.02em;color:#fff;margin-bottom:32px;
+  line-height:1.3;
+}
+.pc-list{list-style:none;}
+.pc-list li{
+  display:flex;gap:16px;
+  font-size:0.85rem;font-weight:300;
+  color:rgba(255,255,255,0.4);
+  padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  line-height:1.6;
+}
+.pc-list li:last-child{border-bottom:none;}
+.pc-list li span{
+  flex-shrink:0;font-size:0.6rem;
+  color:rgba(255,255,255,0.15);
+  margin-top:4px;letter-spacing:0.05em;
+}
+
+/* ─── FEATURES ─── */
+.features-intro{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:end;
+  margin-bottom:80px;
+}
+.features-sub{
+  font-size:0.9rem;font-weight:300;
+  color:rgba(255,255,255,0.35);
+  line-height:1.9;max-width:400px;
+  align-self:end;
+}
+.features-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.06);
+}
+.feat-card{
+  background:#000;padding:48px 40px;
+  transition:background 0.4s;
+  position:relative;overflow:hidden;
+}
+.feat-card::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(79,142,247,0),transparent);
+  transition:background 0.4s;
+}
+.feat-card:hover{background:#060a14;}
+.feat-card:hover::after{
+  background:linear-gradient(90deg,transparent,rgba(79,142,247,0.4),transparent);
+}
+.feat-num{
+  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.15);margin-bottom:40px;
+  font-variant-numeric:tabular-nums;
+}
+.feat-title{
+  font-size:1.15rem;font-weight:700;
+  letter-spacing:-0.02em;color:#fff;margin-bottom:12px;
+}
+.feat-desc{
+  font-size:0.82rem;font-weight:300;
+  color:rgba(255,255,255,0.35);line-height:1.75;
+}
+
+/* ─── FLOW ─── */
+.flow-section{background:#050505;}
+.flow-steps{
+  display:flex;gap:0;
+  border:1px solid rgba(255,255,255,0.06);
+  margin-top:80px;
+}
+.flow-step{
+  flex:1;padding:56px 40px;
+  border-right:1px solid rgba(255,255,255,0.06);
+  position:relative;
+}
+.flow-step:last-child{border-right:none;}
+.flow-step-num{
+  font-size:3rem;font-weight:900;
+  letter-spacing:-0.04em;
+  color:rgba(255,255,255,0.04);
+  line-height:1;margin-bottom:40px;
+}
+.flow-step-title{
+  font-size:1rem;font-weight:700;
+  color:#fff;margin-bottom:12px;
+}
+.flow-step-desc{
+  font-size:0.78rem;font-weight:300;
+  color:rgba(255,255,255,0.3);
+  line-height:1.7;
+}
+.flow-arrow{
+  position:absolute;right:-13px;top:50%;
+  transform:translateY(-50%);
+  width:26px;height:26px;
+  background:#000;border:1px solid rgba(255,255,255,0.1);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  z-index:2;font-size:0.6rem;color:rgba(255,255,255,0.3);
+}
+.flow-step:last-child .flow-arrow{display:none;}
+
+/* ─── PRODUCTS ─── */
+.products-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.06);
+  margin-top:80px;
+}
+.prod-card{
+  background:#000;padding:56px 40px;
+  transition:background 0.3s;
+}
+.prod-card:hover{background:#080808;}
+.prod-idx{
+  font-size:0.6rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.15);margin-bottom:48px;
+  display:flex;align-items:center;gap:12px;
+}
+.prod-idx::after{
+  content:'';flex:1;height:1px;
+  background:rgba(255,255,255,0.07);
+}
+.prod-icon{
+  width:40px;height:40px;margin-bottom:28px;
+  display:block;opacity:0.7;
+}
+.prod-title{
+  font-size:1.05rem;font-weight:700;
+  color:#fff;margin-bottom:10px;
+  letter-spacing:-0.01em;
+}
+.prod-desc{
+  font-size:0.8rem;font-weight:300;
+  color:rgba(255,255,255,0.3);
+  line-height:1.75;
+}
+
+/* ─── MARKET NUMBERS ─── */
+.market-section{background:#000;}
+.market-numbers{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid rgba(255,255,255,0.06);
+  border-left:1px solid rgba(255,255,255,0.06);
+  margin-top:80px;
+}
+.mnum-card{
+  padding:60px 48px;
+  border-right:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.mnum-scope{
+  font-size:0.6rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.2);margin-bottom:20px;
+}
+.mnum-val{
+  font-size:2.8rem;font-weight:900;
+  letter-spacing:-0.04em;color:#fff;
+  line-height:1;margin-bottom:10px;
+}
+.mnum-desc{
+  font-size:0.75rem;font-weight:300;
+  color:rgba(255,255,255,0.25);line-height:1.6;
+}
+
+/* ─── PHASE / ROADMAP ─── */
+.roadmap-section{background:#040404;}
+.phase-rows{margin-top:80px;}
+.phase-row{
+  display:flex;align-items:stretch;
+  border-top:1px solid rgba(255,255,255,0.06);
+  transition:background 0.3s;
+}
+.phase-row:last-child{border-bottom:1px solid rgba(255,255,255,0.06);}
+.phase-row:hover{background:rgba(255,255,255,0.02);}
+.phase-tag-col{
+  width:180px;flex-shrink:0;
+  padding:40px 40px;
+  border-right:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:flex-start;
+}
+.phase-tag{
+  font-size:0.65rem;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:5px 12px;border-radius:2px;
+}
+.ph0{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);}
+.ph1{background:rgba(79,142,247,0.1);color:rgba(79,142,247,0.8);}
+.ph2{background:rgba(245,200,60,0.08);color:rgba(245,200,60,0.6);}
+.ph3{background:rgba(255,80,80,0.08);color:rgba(255,100,100,0.5);}
+.phase-body{
+  flex:1;padding:40px 48px;
+}
+.phase-title{
+  font-size:1rem;font-weight:700;
+  color:#fff;margin-bottom:6px;
+}
+.phase-desc{
+  font-size:0.8rem;font-weight:300;
+  color:rgba(255,255,255,0.3);line-height:1.7;
+}
+.phase-date{
+  width:140px;flex-shrink:0;
+  padding:40px 40px;
+  border-left:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:flex-start;justify-content:flex-end;
+  font-size:0.7rem;font-weight:400;
+  color:rgba(255,255,255,0.15);letter-spacing:0.05em;
+}
+
+/* ─── CTA ─── */
+.cta-section{
+  position:relative;overflow:hidden;
+  padding:180px 60px;text-align:center;
+  background:#000;
+}
+.cta-glow{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse, rgba(79,142,247,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.cta-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;}
+.cta-title{
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:900;letter-spacing:-0.04em;
+  line-height:1;margin-bottom:24px;
+}
+.cta-sub{
+  font-size:0.9rem;font-weight:300;
+  color:rgba(255,255,255,0.35);
+  line-height:1.8;margin-bottom:56px;
+}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:14px;
+  background:#fff;color:#000;
+  font-size:0.8rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:18px 44px;text-decoration:none;
+  transition:all 0.3s;
+  cursor:pointer;border:none;
+}
+.cta-btn:hover{
+  background:transparent;color:#fff;
+  outline:1px solid rgba(255,255,255,0.4);
+}
+.cta-btn svg{transition:transform 0.3s;}
+.cta-btn:hover svg{transform:translateX(4px);}
+
+/* ─── FOOTER ─── */
+footer{
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding:40px 60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:1;
+}
+.foot-logo{
+  font-size:0.85rem;font-weight:800;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,255,255,0.5);
+}
+.foot-copy{
+  font-size:0.65rem;font-weight:300;
+  color:rgba(255,255,255,0.15);letter-spacing:0.08em;
+}
+.foot-loc{
+  font-size:0.65rem;font-weight:300;
+  color:rgba(255,255,255,0.15);letter-spacing:0.08em;
+}
+
+/* ─── CANVAS SECTION BG ─── */
+.canvas-section{
+  position:relative;
+}
+#wave-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0.15;pointer-events:none;
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  nav{padding:20px 24px;}
+  .hero{padding:0 24px 60px;}
+  .hero-top{left:24px;}
+  h1.hero-title{font-size:3rem;}
+  .section{padding:100px 24px;}
+  .problem-layout,.features-grid,.products-row{grid-template-columns:1fr;}
+  .market-numbers{grid-template-columns:1fr;}
+  .flow-steps{flex-direction:column;}
+  .flow-step{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .flow-step:last-child{border-bottom:none;}
+  .flow-arrow{display:none!important;}
+  .features-intro{grid-template-columns:1fr;}
+  .phase-tag-col{width:120px;padding:24px 20px;}
+  .phase-body{padding:24px 20px;}
+  .phase-date{width:80px;padding:24px 16px;}
+  footer{flex-direction:column;gap:12px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Surgiflow</a>
+  <div class="nav-right">
+    <a href="#features" class="nav-link">Solution</a>
+    <a href="#products" class="nav-link">Products</a>
+    <a href="#roadmap" class="nav-link">Roadmap</a>
+    <span class="nav-tag">Coming Soon</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-top">
+    <div class="hero-eyebrow">AI 수술 데이터 관리 플랫폼</div>
+    <h1 class="hero-title">
+      Surgery<br/>
+      <em>Data</em><br/>
+      Flows.
+    </h1>
+    <p class="hero-desc">
+      의사의 기존 행위 그대로, 데이터는 자동으로 구조화됩니다.<br/>
+      추가 업무 없이 디지털 전환되는 LLM 기반 플랫폼.
+    </p>
+  </div>
+  <div class="hero-bottom">
+    <div class="hero-stat-row">
+      <div class="hero-stat-item">
+        <div class="hero-stat-num" data-target="3,000">0</div>
+        <div class="hero-stat-label">수술 활동 정형외과 전문의</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num" data-target="7,400만">0</div>
+        <div class="hero-stat-label">정형외과 연간 외래 건수</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num" data-target="0개">0</div>
+        <div class="hero-stat-label">국내 수술 데이터 플랫폼</div>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- PROBLEM -->
+<section class="section" id="problem">
+  <div class="section-inner">
+    <div class="reveal"><span class="label">Problem</span></div>
+    <h2 class="big-heading reveal reveal-d1">
+      수술실 안과 밖,<br/>
+      <span class="dim">정보는 단절되어 있습니다</span>
+    </h2>
+    <div class="problem-layout">
+      <div class="problem-card reveal reveal-d2">
+        <div class="pc-tag">의사의 일상 — 수술실 밖 정보 단절</div>
+        <div class="pc-title">병원 EMR 밖에서는<br/>아무것도 볼 수 없다</div>
+        <ul class="pc-list">
+          <li><span>01</span>수술 스케줄은 병원 EMR에서만 — 퇴근 후 당직에게 전화로 확인</li>
+          <li><span>02</span>관절경 영상 수백 건을 폴더 하나하나 수동 탐색</li>
+          <li><span>03</span>통계 낼 때마다 엑셀로 수동 입력 반복</li>
+          <li><span>04</span>비서 퇴사 시 데이터 소멸, 구조화 불가</li>
+        </ul>
+      </div>
+      <div class="problem-card reveal reveal-d3">
+        <div class="pc-tag">환자의 일상 — 수술 후 정보 공백</div>
+        <div class="pc-title">퇴원 후 환자는<br/>정보 사각지대에 놓인다</div>
+        <ul class="pc-list">
+          <li><span>01</span>퇴원 재활 안내문 40% 이상 분실 — A4 한 장이 전부</li>
+          <li><span>02</span>퇴원 후 2~4주 정보 완전 단절</li>
+          <li><span>03</span>"이게 정상인지?" 불안 → 응급실 방문</li>
+          <li><span>04</span>디지털 사후관리 플랫폼 국내 0개</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- FEATURES -->
+<section class="section canvas-section" id="features">
+  <canvas id="wave-canvas"></canvas>
+  <div class="section-inner">
+    <div class="features-intro">
+      <div>
+        <div class="reveal"><span class="label">Solution</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          추가 업무가 아닌,<br/>
+          <span class="dim">기존 업무의<br/>디지털 전환</span>
+        </h2>
+      </div>
+      <p class="features-sub reveal reveal-d2">
+        의사가 이미 하고 있는 행위의 부산물로<br/>
+        데이터가 자동 구조화됩니다.<br/>
+        Surgiflow는 워크플로우를 바꾸지 않습니다.
+      </p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal reveal-d1">
+        <div class="feat-num">01</div>
+        <div class="feat-title">수술 스케줄 모바일 뷰어</div>
+        <p class="feat-desc">병원 EMR 없이도 스마트폰에서 언제 어디서나 확인. 30초 입력으로 케이스 등록 완료.</p>
+      </div>
+      <div class="feat-card reveal reveal-d2">
+        <div class="feat-num">02</div>
+        <div class="feat-title">관절경 영상 키워드 검색</div>
+        <p class="feat-desc">OCR/NLP 기반 술식·임플란트 키워드 즉시 검색. 수동 폴더 탐색이 완전히 사라집니다.</p>
+      </div>
+      <div class="feat-card reveal reveal-d3">
+        <div class="feat-num">03</div>
+        <div class="feat-title">LLM 수술 기록 자동 구조화</div>
+        <p class="feat-desc">음성·텍스트 입력 → 정형 변수 자동 변환. 수술 패턴 리포트와 케이스 포트폴리오가 자동 생성됩니다.</p>
+      </div>
+      <div class="feat-card reveal reveal-d4">
+        <div class="feat-num">04</div>
+        <div class="feat-title">환자 재활 프로토콜 앱 발송</div>
+        <p class="feat-desc">QR 스캔 → 앱 연결 → 2주·4주·8주 시점별 맞춤 재활 가이드 자동 제공.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- FLOW -->
+<section class="section flow-section" id="how">
+  <div class="section-inner">
+    <div class="reveal"><span class="label">How It Works</span></div>
+    <h2 class="big-heading reveal reveal-d1">
+      30초 입력,<br/><span class="dim">이후는 자동</span>
+    </h2>
+    <div class="flow-steps">
+      <div class="flow-step reveal reveal-d1">
+        <div class="flow-step-num">01</div>
+        <div class="flow-step-title">의사 케이스 입력</div>
+        <p class="flow-step-desc">수술 정보 30초 입력<br/>술식·임플란트·특이사항</p>
+        <div class="flow-arrow">›</div>
+      </div>
+      <div class="flow-step reveal reveal-d2">
+        <div class="flow-step-num">02</div>
+        <div class="flow-step-title">QR 자동 생성</div>
+        <p class="flow-step-desc">비식별 케이스번호 기반<br/>고유 QR 코드 자동 발급</p>
+        <div class="flow-arrow">›</div>
+      </div>
+      <div class="flow-step reveal reveal-d3">
+        <div class="flow-step-num">03</div>
+        <div class="flow-step-title">퇴원 시 전달</div>
+        <p class="flow-step-desc">간호사 퇴원교육 시<br/>QR 안내문 수령</p>
+        <div class="flow-arrow">›</div>
+      </div>
+      <div class="flow-step reveal reveal-d4">
+        <div class="flow-step-num">04</div>
+        <div class="flow-step-title">환자 자발적 연결</div>
+        <p class="flow-step-desc">QR 스캔 → 앱 가입<br/>재활 프로토콜 자동 수신</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-inner">
+    <div class="reveal"><span class="label">Products</span></div>
+    <h2 class="big-heading reveal reveal-d1">
+      세 가지 제품,<br/><span class="dim">하나의 플랫폼</span>
+    </h2>
+    <div class="products-row">
+      <div class="prod-card reveal reveal-d1">
+        <div class="prod-idx">Product 01</div>
+        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="12" y="4" width="16" height="28" rx="3"/>
+          <line x1="16" y1="9" x2="24" y2="9"/>
+          <line x1="16" y1="13" x2="24" y2="13"/>
+          <line x1="16" y1="17" x2="21" y2="17"/>
+          <circle cx="20" cy="27" r="2"/>
+        </svg>
+        <div class="prod-title">의사용 모바일 앱</div>
+        <p class="prod-desc">수술 스케줄 확인, 케이스 입력, 관절경 영상 검색, 자동 패턴 리포트를 스마트폰 하나로.</p>
+      </div>
+      <div class="prod-card reveal reveal-d2">
+        <div class="prod-idx">Product 02</div>
+        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="20" cy="10" r="4"/>
+          <path d="M12 28 C12 22 28 22 28 28"/>
+          <path d="M16 28 L16 36"/>
+          <path d="M24 28 L24 36"/>
+          <path d="M13 32 L27 32"/>
+          <path d="M28 18 L32 22 M32 18 L28 22"/>
+        </svg>
+        <div class="prod-title">환자용 모바일 앱</div>
+        <p class="prod-desc">맞춤형 재활 프로토콜, X-ray 회복 타임라인, 날짜별 운동 가이드를 자동으로 제공.</p>
+      </div>
+      <div class="prod-card reveal reveal-d3">
+        <div class="prod-idx">Product 03</div>
+        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="6" width="32" height="22" rx="2"/>
+          <line x1="14" y1="34" x2="26" y2="34"/>
+          <line x1="20" y1="28" x2="20" y2="34"/>
+          <circle cx="20" cy="17" r="5"/>
+          <line x1="24" y1="21" x2="28" y2="25"/>
+        </svg>
+        <div class="prod-title">PC 로컬 영상 아카이빙</div>
+        <p class="prod-desc">관절경 영상 원본 PC 보관, DICOM 제거 후 비식별 메타 클라우드 동기화 및 키워드 검색.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- MARKET -->
+<section class="section market-section" id="market">
+  <div class="section-inner">
+    <div class="reveal"><span class="label">Market</span></div>
+    <h2 class="big-heading reveal reveal-d1">
+      국내 최초,<br/><span class="dim">글로벌 확장 가능한 시장</span>
+    </h2>
+    <div class="market-numbers">
+      <div class="mnum-card reveal reveal-d1">
+        <div class="mnum-scope">TAM · Global</div>
+        <div class="mnum-val" data-target="$32.9B">$0B</div>
+        <p class="mnum-desc">글로벌 수술 디지털 플랫폼 + EMR 시장 (2031년 기준)</p>
+      </div>
+      <div class="mnum-card reveal reveal-d2">
+        <div class="mnum-scope">SAM · Korea</div>
+        <div class="mnum-val" data-target="2,000억">0억</div>
+        <p class="mnum-desc">국내 외과 계열 수술 데이터 관리 시장 전체</p>
+      </div>
+      <div class="mnum-card reveal reveal-d3">
+        <div class="mnum-scope">SOM · 초기 3년</div>
+        <div class="mnum-val" data-target="30억">0억</div>
+        <p class="mnum-desc">2·3차 병원 정형외과 의사 500명 기준 목표 매출</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- ROADMAP -->
+<section class="section roadmap-section" id="roadmap">
+  <div class="section-inner">
+    <div class="reveal"><span class="label">Roadmap</span></div>
+    <h2 class="big-heading reveal reveal-d1">
+      규제를 설계에 녹인<br/><span class="dim">단계별 성장 전략</span>
+    </h2>
+    <div class="phase-rows" style="margin-top:80px;">
+      <div class="phase-row reveal reveal-d1">
+        <div class="phase-tag-col"><span class="phase-tag ph0">Phase 0–1</span></div>
+        <div class="phase-body">
+          <div class="phase-title">비의료기기 MVP</div>
+          <p class="phase-desc">수술 스케줄, 영상 아카이빙, 키워드 검색, 범용 재활 — 인허가 불필요, 리스크 제로 출시</p>
+        </div>
+        <div class="phase-date">'26.12</div>
+      </div>
+      <div class="phase-row reveal reveal-d2">
+        <div class="phase-tag-col"><span class="phase-tag ph1">Phase 1</span></div>
+        <div class="phase-body">
+          <div class="phase-title">경량 자동화</div>
+          <p class="phase-desc">LLM 수술 기록 구조화, 수술 패턴 리포트, 예후 분석 — 비의료기기 상태 유지</p>
+        </div>
+        <div class="phase-date">'27</div>
+      </div>
+      <div class="phase-row reveal reveal-d3">
+        <div class="phase-tag-col"><span class="phase-tag ph2">Phase 2</span></div>
+        <div class="phase-body">
+          <div class="phase-title">예측 도입 (SaMD 경계)</div>
+          <p class="phase-desc">수술시간 예측, OR 스케줄 최적화 — IRB 승인, 혁신의료기기 신청</p>
+        </div>
+        <div class="phase-date">'28</div>
+      </div>
+      <div class="phase-row reveal reveal-d4">
+        <div class="phase-tag-col"><span class="phase-tag ph3">Phase 3–4</span></div>
+        <div class="phase-body">
+          <div class="phase-title">플랫폼화 + 차세대 EMR</div>
+          <p class="phase-desc">환자 회복 예측, EMR 연동, 타 외과 계열 확장, 일본·동남아·미국 글로벌 진출</p>
+        </div>
+        <div class="phase-date">'29~</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="h-line"></div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="foot-logo">Surgiflow</span>
+  <span class="foot-copy">© 2026 Team Framing. All rights reserved.</span>
+  <span class="foot-loc">Osan-si, Gyeonggi-do, Korea</span>
+</footer>
+
+<script>
+// ─── PARTICLE CANVAS ───
+(function(){
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = {x:0,y:0};
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor(){
+      this.reset();
+    }
+    reset(){
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.size = Math.random() * 1.2 + 0.3;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.4 + 0.05;
+      this.life = Math.random() * 200 + 100;
+      this.maxLife = this.life;
+    }
+    update(){
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life--;
+      if(this.life <= 0 || this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10){
+        this.reset();
+      }
+    }
+    draw(){
+      const alpha = this.opacity * (this.life / this.maxLife);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
+    }
+  }
+
+  for(let i=0; i<120; i++) particles.push(new Particle());
+
+  // Draw connections
+  function drawLines(){
+    for(let i=0; i<particles.length; i++){
+      for(let j=i+1; j<particles.length; j++){
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < 120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(255,255,255,${0.04 * (1 - dist/120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    drawLines();
+    particles.forEach(p=>{ p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ─── WAVE CANVAS ───
+(function(){
+  const canvas = document.getElementById('wave-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let t = 0;
+
+  function resize(){
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const W = canvas.width, H = canvas.height;
+    const cols = 60, rows = 20;
+    const cw = W/cols, ch = H/rows;
+    for(let r=0; r<rows; r++){
+      for(let c=0; c<cols; c++){
+        const x = c*cw + cw/2;
+        const y = r*ch + ch/2;
+        const wave = Math.sin(c*0.3 + r*0.5 + t) * 0.5 + 0.5;
+        const sz = wave * 1.5 + 0.2;
+        const alpha = wave * 0.25 + 0.02;
+        ctx.beginPath();
+        ctx.arc(x, y, sz, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+    }
+    t += 0.018;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ─── SCROLL REVEAL ───
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('visible');
+    });
+  },{threshold:0.12});
+  els.forEach(el => observer.observe(el));
+})();
+
+// ─── SLOT ROULETTE COUNTER ───
+(function(){
+  // parse "3,000"  "7,400만"  "0개"  "$32.9B"  "2,000억"  "30억"
+  function parse(raw){
+    const m = raw.match(/^(\$?)([\d,]+(?:\.\d+)?)(.*)$/);
+    if(!m) return null;
+    return {
+      prefix: m[1],
+      num: parseFloat(m[2].replace(/,/g,'')),
+      suffix: m[3],
+      hasComma: m[2].includes(','),
+      hasDecimal: m[2].includes('.')
+    };
+  }
+
+  function fmt(n, info){
+    if(info.hasComma) return Math.round(n).toLocaleString('en-US');
+    if(info.hasDecimal) return n.toFixed(1);
+    return Math.round(n).toString();
+  }
+
+  function roulette(el){
+    if(el.dataset.done) return;
+    el.dataset.done = '1';
+    const info = parse(el.dataset.target);
+    if(!info){ el.textContent = el.dataset.target; return; }
+
+    const TOTAL   = 1600; // total ms
+    const SPIN    = 900;  // fast random spin phase
+    const SETTLE  = 700;  // slow land phase
+
+    const start = performance.now();
+
+    function randomNear(target, intensity){
+      // intensity 0→1: how far from target the random strays
+      const range = target * intensity + (info.hasDecimal ? 5 : 200);
+      return Math.max(0, target - range + Math.random() * range * 2);
+    }
+
+    function tick(now){
+      const elapsed = now - start;
+
+      if(elapsed < SPIN){
+        // SPIN phase: rapid random numbers, very jittery
+        const intensity = 1 - (elapsed / SPIN) * 0.4; // gradually narrows
+        const rand = randomNear(info.num, intensity);
+        el.textContent = info.prefix + fmt(rand, info) + info.suffix;
+        requestAnimationFrame(tick);
+
+      } else if(elapsed < TOTAL){
+        // SETTLE phase: ease toward final value
+        const t = (elapsed - SPIN) / SETTLE;
+        const ease = 1 - Math.pow(1 - t, 4);
+        const val = info.num * ease + randomNear(info.num, (1-ease)*0.02);
+        el.textContent = info.prefix + fmt(Math.min(val, info.num), info) + info.suffix;
+        requestAnimationFrame(tick);
+
+      } else {
+        // LOCK — exact final value
+        el.textContent = el.dataset.target;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const els = document.querySelectorAll('[data-target]');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) roulette(e.target); });
+  },{threshold:0.6});
+  els.forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>
