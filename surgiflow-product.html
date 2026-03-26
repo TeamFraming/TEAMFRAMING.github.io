@@ -1047,7 +1047,6 @@ footer{
   const el = document.getElementById('heroTitle');
   if(!el) return;
 
-  // 각 청크: {text, em, br}
   const chunks = [
     {text:'Surgery', em:false},
     {br:true},
@@ -1056,19 +1055,21 @@ footer{
     {text:'Flows.',  em:false},
   ];
 
-  // 문자 단위로 펼치기
   const chars = [];
   chunks.forEach(c => {
     if(c.br){ chars.push({br:true}); }
     else { [...c.text].forEach(ch => chars.push({ch, em:c.em})); }
   });
 
+  const TYPE_SPEED   = 130; // 타이핑 속도 (ms)
+  const DELETE_SPEED = 55;  // 삭제 속도
+  const PAUSE_AFTER  = 3200; // 완성 후 대기 (ms)
+  const PAUSE_BEFORE = 500;  // 재시작 전 대기
+
   let typed = [];
-  let idx = 0;
 
   function render(){
-    let html = '';
-    let inEm = false;
+    let html = '', inEm = false;
     typed.forEach(c => {
       if(c.br){
         if(inEm){html+='</em>';inEm=false;}
@@ -1086,15 +1087,30 @@ footer{
     el.innerHTML = html;
   }
 
-  function type(){
-    if(idx < chars.length){
-      typed.push(chars[idx++]);
+  function typeNext(){
+    if(typed.length < chars.length){
+      typed.push(chars[typed.length]);
       render();
-      setTimeout(type, chars[idx-1].br ? 120 : 75);
+      const delay = typed[typed.length-1].br ? TYPE_SPEED * 1.5 : TYPE_SPEED;
+      setTimeout(typeNext, delay);
+    } else {
+      // 완성 — 잠시 대기 후 삭제 시작
+      setTimeout(deleteNext, PAUSE_AFTER);
     }
   }
 
-  setTimeout(type, 400);
+  function deleteNext(){
+    if(typed.length > 0){
+      typed.pop();
+      render();
+      setTimeout(deleteNext, DELETE_SPEED);
+    } else {
+      // 다 지움 — 잠시 후 재타이핑
+      setTimeout(typeNext, PAUSE_BEFORE);
+    }
+  }
+
+  setTimeout(typeNext, 500);
 })();
 
 // ─── CARD SPOTLIGHT ───
