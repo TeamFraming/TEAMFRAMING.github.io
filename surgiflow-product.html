@@ -305,13 +305,22 @@ h1.hero-title em{
   line-height:1.7;
 }
 .flow-arrow{
-  position:absolute;right:-13px;top:50%;
+  position:absolute;right:-14px;top:50%;
   transform:translateY(-50%);
-  width:26px;height:26px;
-  background:#000;border:1px solid rgba(255,255,255,0.1);
+  width:28px;height:28px;
+  background:#0a0a0a;border:1px solid rgba(255,255,255,0.12);
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  z-index:2;font-size:0.6rem;color:rgba(255,255,255,0.3);
+  z-index:2;
+}
+.flow-arrow svg{
+  width:10px;height:10px;
+  stroke:rgba(255,255,255,0.3);
+  stroke-width:1.8;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  display:block;
 }
 .flow-step:last-child .flow-arrow{display:none;}
 
@@ -703,19 +712,19 @@ footer{
         <div class="flow-step-num">01</div>
         <div class="flow-step-title">의사 케이스 입력</div>
         <p class="flow-step-desc">수술 정보 30초 입력<br/>술식·임플란트·특이사항</p>
-        <div class="flow-arrow">›</div>
+        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
       </div>
       <div class="flow-step reveal reveal-d2">
         <div class="flow-step-num">02</div>
         <div class="flow-step-title">QR 자동 생성</div>
         <p class="flow-step-desc">비식별 케이스번호 기반<br/>고유 QR 코드 자동 발급</p>
-        <div class="flow-arrow">›</div>
+        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
       </div>
       <div class="flow-step reveal reveal-d3">
         <div class="flow-step-num">03</div>
         <div class="flow-step-title">퇴원 시 전달</div>
         <p class="flow-step-desc">간호사 퇴원교육 시<br/>QR 안내문 수령</p>
-        <div class="flow-arrow">›</div>
+        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
       </div>
       <div class="flow-step reveal reveal-d4">
         <div class="flow-step-num">04</div>
