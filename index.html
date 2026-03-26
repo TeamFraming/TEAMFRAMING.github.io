@@ -670,17 +670,7 @@
                 isPlaying = false;
             });
 
-            // 페이지 로드 시 자동 재생 시도 (브라우저 정책상 실패할 수 있음)
-            backgroundMusic.currentTime = 0;
-            backgroundMusic.play().then(function() {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                isPlaying = true;
-                console.log('🎵 자동 재생 성공!');
-            }).catch(function() {
-                // 자동 재생이 차단되면 사용자가 버튼을 눌러야 함
-                console.log('🎵 자동 재생 차단/실패');
-            });
+            // 자동 재생 없음 - 버튼으로만 재생
         }
 
 
