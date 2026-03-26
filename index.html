@@ -471,8 +471,8 @@
             const timeAttack = params.get('timeattack') === '1' || params.get('timeattack') === 'true';
             const attackSeconds = Number(params.get('timeattack_seconds') || 30); // 기본 30초
 
-            // 기본 런치: 약 1달(30일) 뒤
-            const countDownDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            // 기본 런치: 40일 뒤
+            const countDownDate = new Date(Date.now() + 40 * 24 * 60 * 60 * 1000);
             if (timeAttack) {
                 countDownDate.setTime(Date.now() + attackSeconds * 1000);
             }
