@@ -471,11 +471,54 @@
             const timeAttack = params.get('timeattack') === '1' || params.get('timeattack') === 'true';
             const attackSeconds = Number(params.get('timeattack_seconds') || 30); // 기본 30초
 
-            // 기본 런치: 40일 뒤
-            const countDownDate = new Date(Date.now() + 40 * 24 * 60 * 60 * 1000);
-            if (timeAttack) {
-                countDownDate.setTime(Date.now() + attackSeconds * 1000);
+            // 새로고침해도 리셋되지 않게:
+            // "목표 시각(launchAt)"을 localStorage에 고정해두고 이후 로드에서는 그 값을 사용합니다.
+            const modeKey = 'teamframing_countdown_mode';
+            const launchAtKey = 'teamframing_launchAt_ms';
+            const timeAttackSecondsKey = 'teamframing_timeattack_seconds';
+
+            let countDownDateMs;
+            try {
+                const nowMs = Date.now();
+                const storedMode = window.localStorage.getItem(modeKey);
+                const storedLaunchAt = window.localStorage.getItem(launchAtKey);
+                const storedLaunchAtMs = storedLaunchAt ? Number(storedLaunchAt) : NaN;
+                const storedAttackSeconds = Number(window.localStorage.getItem(timeAttackSecondsKey));
+
+                if (timeAttack) {
+                    // timeattack 모드: 같은 seconds로 들어오는 동안은 목표 시간을 유지
+                    if (
+                        storedMode === 'timeattack' &&
+                        Number.isFinite(storedLaunchAtMs) &&
+                        Number.isFinite(storedAttackSeconds) &&
+                        storedAttackSeconds === attackSeconds
+                    ) {
+                        countDownDateMs = storedLaunchAtMs;
+                    } else {
+                        countDownDateMs = nowMs + attackSeconds * 1000;
+                        window.localStorage.setItem(modeKey, 'timeattack');
+                        window.localStorage.setItem(launchAtKey, String(countDownDateMs));
+                        window.localStorage.setItem(timeAttackSecondsKey, String(attackSeconds));
+                    }
+                } else {
+                    // 기본 모드: 40일 목표 시각을 처음 1회만 고정
+                    if (storedMode === 'default40d' && Number.isFinite(storedLaunchAtMs)) {
+                        countDownDateMs = storedLaunchAtMs;
+                    } else {
+                        countDownDateMs = nowMs + 40 * 24 * 60 * 60 * 1000;
+                        window.localStorage.setItem(modeKey, 'default40d');
+                        window.localStorage.setItem(launchAtKey, String(countDownDateMs));
+                        window.localStorage.removeItem(timeAttackSecondsKey);
+                    }
+                }
+            } catch (e) {
+                // localStorage 사용 불가 시(프라이빗/차단): 새로고침마다 리셋될 수 있음
+                countDownDateMs = timeAttack
+                    ? Date.now() + attackSeconds * 1000
+                    : Date.now() + 40 * 24 * 60 * 60 * 1000;
             }
+
+            const countDownDate = new Date(countDownDateMs);
 
             const x = setInterval(function() {
                 const now = Date.now();
