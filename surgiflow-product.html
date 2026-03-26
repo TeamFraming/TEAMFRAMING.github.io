@@ -974,6 +974,21 @@ footer{
   draw();
 })();
 
+// ─── CARD SPOTLIGHT ───
+(function(){
+  document.querySelectorAll('.feat-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.background = `radial-gradient(320px circle at ${x}px ${y}px, rgba(79,142,247,0.08) 0%, #000 70%)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.background = '';
+    });
+  });
+})();
+
 // ─── SCROLL REVEAL ───
 (function(){
   const els = document.querySelectorAll('.reveal');
