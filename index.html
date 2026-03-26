@@ -135,6 +135,41 @@
             }
         }
 
+        /* Top Left Team Logo */
+        .team-logo-btn {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 1001; /* top-controls(1000)보다 위 */
+            padding: 0;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .team-logo-btn img {
+            height: 46px;
+            width: auto;
+            display: block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
+        }
+
+        .team-logo-btn:hover img {
+            transform: scale(1.06);
+            opacity: 0.95;
+        }
+
+        @media (max-width: 768px) {
+            .team-logo-btn {
+                top: 1rem;
+                left: 1rem;
+            }
+            .team-logo-btn img {
+                height: 36px;
+            }
+        }
+
         .music-control {
             width: 50px;
             height: 50px;
@@ -323,6 +358,11 @@
     </style>
 </head>
 <body>
+    <!-- Team Logo (Top Left) -->
+    <button class="team-logo-btn" id="teamLogoBtn" type="button" title="Reset site">
+        <img src="assets/teamframing-logo.png" alt="TEAMFRAMING 로고">
+    </button>
+
     <!-- Top Right Controls -->
     <div class="top-controls">
         <button class="music-control" id="musicToggle">
@@ -412,9 +452,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // 타이핑 효과: AI HEALTHCARE -> TEAMFRAMING -> SERGIFLOW 순환
+        // 타이핑 효과: AI HEALTHCARE -> TEAMFRAMING -> SURGIFLOW 순환
         function typeText() {
-            const texts = ["AI HEALTHCARE", "TEAMFRAMING", "SERGIFLOW"];
+            const texts = ["AI HEALTHCARE", "TEAMFRAMING", "SURGIFLOW"];
             const typingElement = document.getElementById('typing-text');
 
             const params = new URLSearchParams(window.location.search);
@@ -645,6 +685,19 @@
             initMusicControl();
             initGithubDropdown();
             initOutsideClick();
+
+            // 로고 클릭 시 카운트다운 목표 시각 리셋 후 페이지 재로딩
+            const logoBtn = document.getElementById('teamLogoBtn');
+            if (logoBtn) {
+                logoBtn.addEventListener('click', function() {
+                    try {
+                        localStorage.removeItem('teamframing_countdown_mode');
+                        localStorage.removeItem('teamframing_launchAt_ms');
+                        localStorage.removeItem('teamframing_timeattack_seconds');
+                    } catch (e) {}
+                    window.location.reload();
+                });
+            }
         });
 
 
