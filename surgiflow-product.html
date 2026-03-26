@@ -74,15 +74,18 @@ nav{
   padding:0 60px 80px;
 }
 .hero-top{
-  position:absolute;top:50%;left:60px;
-  transform:translateY(-50%);
-  max-width:800px;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:100%;
+  text-align:center;
+  padding:0 60px;
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:14px;
   font-size:0.85rem;font-weight:400;letter-spacing:0.14em;
   text-transform:uppercase;color:rgba(255,255,255,0.5);
   margin-bottom:40px;
+  justify-content:center;
 }
 .hero-eyebrow::before{
   content:'';display:block;
@@ -104,18 +107,18 @@ h1.hero-title em{
 .hero-desc{
   font-size:1rem;font-weight:300;
   color:rgba(255,255,255,0.45);
-  max-width:440px;line-height:1.8;
+  max-width:540px;line-height:1.8;
   letter-spacing:0.01em;
+  margin:0 auto;
 }
 .hero-bottom{
   display:flex;align-items:flex-end;
-  justify-content:space-between;
-  border-top:1px solid rgba(255,255,255,0.08);
+  justify-content:center;
   padding-top:32px;
   position:relative;z-index:1;
 }
-.hero-stat-row{display:flex;gap:60px;}
-.hero-stat-item{}
+.hero-stat-row{display:flex;gap:80px;justify-content:center;}
+.hero-stat-item{text-align:center;}
 .hero-stat-num{
   font-size:3rem;font-weight:800;
   letter-spacing:-0.03em;color:#fff;
@@ -804,7 +807,7 @@ footer{
 <footer>
   <span class="foot-logo">Surgiflow</span>
   <span class="foot-copy">© 2026 Team Framing. All rights reserved.</span>
-  <img src="assets/FRAMING LEFTSIDE.png" alt="TEAM FRAMING" style="height:48px;width:auto;opacity:0.5;">
+  <img src="assets/FRAMING LEFTSIDE.png" alt="TEAM FRAMING" style="height:90px;width:auto;opacity:0.45;">
 </footer>
 
 <script>
@@ -958,40 +961,21 @@ footer{
     const info = parse(el.dataset.target);
     if(!info){ el.textContent = el.dataset.target; return; }
 
-    const TOTAL   = 1600; // total ms
-    const SPIN    = 900;  // fast random spin phase
-    const SETTLE  = 700;  // slow land phase
-
+    const TOTAL = 2200; // total ms — 느리고 부드럽게
     const start = performance.now();
-
-    function randomNear(target, intensity){
-      // intensity 0→1: how far from target the random strays
-      const range = target * intensity + (info.hasDecimal ? 5 : 200);
-      return Math.max(0, target - range + Math.random() * range * 2);
-    }
 
     function tick(now){
       const elapsed = now - start;
-
-      if(elapsed < SPIN){
-        // SPIN phase: rapid random numbers, very jittery
-        const intensity = 1 - (elapsed / SPIN) * 0.4; // gradually narrows
-        const rand = randomNear(info.num, intensity);
-        el.textContent = info.prefix + fmt(rand, info) + info.suffix;
-        requestAnimationFrame(tick);
-
-      } else if(elapsed < TOTAL){
-        // SETTLE phase: ease toward final value
-        const t = (elapsed - SPIN) / SETTLE;
-        const ease = 1 - Math.pow(1 - t, 4);
-        const val = info.num * ease + randomNear(info.num, (1-ease)*0.02);
-        el.textContent = info.prefix + fmt(Math.min(val, info.num), info) + info.suffix;
-        requestAnimationFrame(tick);
-
-      } else {
-        // LOCK — exact final value
+      if(elapsed >= TOTAL){
         el.textContent = el.dataset.target;
+        return;
       }
+      // ease-out cubic: 처음엔 빠르게, 끝에서 천천히 멈춤
+      const t = elapsed / TOTAL;
+      const ease = 1 - Math.pow(1 - t, 3);
+      const val = info.num * ease;
+      el.textContent = info.prefix + fmt(Math.min(val, info.num), info) + info.suffix;
+      requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   }
