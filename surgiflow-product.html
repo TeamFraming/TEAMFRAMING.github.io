@@ -1031,8 +1031,8 @@ footer{
   }
 
   function roulette(el){
-    if(el.dataset.done) return;
-    el.dataset.done = '1';
+    if(el.dataset.running) return;
+    el.dataset.running = '1';
     const info = parse(el.dataset.target);
     if(!info){ el.textContent = el.dataset.target; return; }
 
@@ -1043,9 +1043,9 @@ footer{
       const elapsed = now - start;
       if(elapsed >= TOTAL){
         el.textContent = el.dataset.target;
+        delete el.dataset.running;
         return;
       }
-      // ease-out cubic: 처음엔 빠르게, 끝에서 천천히 멈춤
       const t = elapsed / TOTAL;
       const ease = 1 - Math.pow(1 - t, 3);
       const val = info.num * ease;
@@ -1057,8 +1057,16 @@ footer{
 
   const els = document.querySelectorAll('[data-target]');
   const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting) roulette(e.target); });
-  },{threshold:0.6});
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        roulette(e.target);
+      } else {
+        // 화면 벗어나면 리셋 → 다시 진입 시 재실행
+        delete e.target.dataset.running;
+        e.target.textContent = '0';
+      }
+    });
+  },{threshold:0.5});
   els.forEach(el => obs.observe(el));
 })();
 </script>
