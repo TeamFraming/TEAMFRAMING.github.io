@@ -368,7 +368,7 @@
 
     <!-- Audio Element -->
     <audio id="backgroundMusic" loop preload="auto">
-        <source src="MUSIC/winnerchi.mp3" type="audio/mpeg">
+        <source src="MUSIC/Yarin%20Primak%20-%20Special%20Vibe.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     <div class="hero-section">
@@ -412,69 +412,73 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // 타이핑 효과
+        // 타이핑 효과: AI HEALTHCARE -> TEAMFRAMING -> SERGIFLOW 순환
         function typeText() {
-            const firstText = "AI HEALTHCARE";
-            const secondText = "TEAM FRAMING";
+            const texts = ["AI HEALTHCARE", "TEAMFRAMING", "SERGIFLOW"];
             const typingElement = document.getElementById('typing-text');
-            let i = 0;
 
-            function typeFirst() {
-                if (i < firstText.length) {
-                    typingElement.textContent += firstText.charAt(i);
-                    i++;
-                    setTimeout(typeFirst, 100);
+            const params = new URLSearchParams(window.location.search);
+            const timeAttack = params.get('timeattack') === '1' || params.get('timeattack') === 'true';
+
+            let textIndex = 0;
+            let charIndex = 0;
+            let deleting = false;
+
+            // 기본(정상 모드) vs 타임어택 모드별 속도/대기 조절
+            const typeSpeed = timeAttack ? 60 : 100; // 타이핑 속도(ms)
+            const deleteSpeed = timeAttack ? 30 : 60; // 삭제 속도(ms)
+            const pauseAfterType = timeAttack ? 600 : 2500; // 한 단어 다 쓴 뒤 대기(ms)
+            const pauseAfterDelete = timeAttack ? 120 : 500; // 모두 지운 뒤 다음 단어까지 대기(ms)
+
+            function tick() {
+                const fullText = texts[textIndex];
+
+                if (!deleting) {
+                    // 타이핑
+                    charIndex++;
+                    typingElement.textContent = fullText.substring(0, charIndex);
+
+                    if (charIndex >= fullText.length) {
+                        deleting = true;
+                        setTimeout(tick, pauseAfterType);
+                    } else {
+                        setTimeout(tick, typeSpeed);
+                    }
+                    return;
+                }
+
+                // 삭제
+                charIndex = Math.max(0, charIndex - 1);
+                typingElement.textContent = fullText.substring(0, charIndex);
+
+                if (charIndex === 0) {
+                    deleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(tick, pauseAfterDelete);
                 } else {
-                    // 첫 번째 텍스트 완료 후 2.5초 대기
-                    setTimeout(deleteText, 2500);
+                    setTimeout(tick, deleteSpeed);
                 }
             }
 
-            function deleteText() {
-                if (typingElement.textContent.length > 0) {
-                    typingElement.textContent = typingElement.textContent.slice(0, -1);
-                    setTimeout(deleteText, 60);
-                } else {
-                    // 모두 지운 후 두 번째 텍스트 타이핑
-                    i = 0;
-                    setTimeout(typeSecond, 500);
-                }
-            }
-
-            function typeSecond() {
-                if (i < secondText.length) {
-                    typingElement.textContent += secondText.charAt(i);
-                    i++;
-                    setTimeout(typeSecond, 120);
-                } else {
-                    // 두 번째 텍스트 완료 후 2.5초 대기 후 다시 지우기
-                    setTimeout(deleteSecondText, 2500);
-                }
-            }
-
-            function deleteSecondText() {
-                if (typingElement.textContent.length > 0) {
-                    typingElement.textContent = typingElement.textContent.slice(0, -1);
-                    setTimeout(deleteSecondText, 60);
-                } else {
-                    // 모두 지운 후 0.5초 대기 후 처음부터 다시 시작
-                    i = 0;
-                    setTimeout(typeFirst, 500);
-                }
-            }
-
-            typeFirst();
+            tick();
         }
 
-        // 카운트다운 타이머 (고정된 미래 날짜)
+        // 카운트다운 타이머
+        // 기본: "지금 기준으로 약 1달 뒤"에 LAUNCHED 표시
+        // 타임어택: URL에 ?timeattack=1 를 붙이면 몇 초 뒤에 바로 LAUNCHED로 전환
         function updateCountdown() {
-            // 2025년 6월 25일로 설정 (약 28일 후)
-            const countDownDate = new Date('2025-06-25T00:00:00');
-            
-            console.log('카운트다운 종료일:', countDownDate.toLocaleString());
-            
+            const params = new URLSearchParams(window.location.search);
+            const timeAttack = params.get('timeattack') === '1' || params.get('timeattack') === 'true';
+            const attackSeconds = Number(params.get('timeattack_seconds') || 30); // 기본 30초
+
+            // 기본 런치: 약 1달(30일) 뒤
+            const countDownDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            if (timeAttack) {
+                countDownDate.setTime(Date.now() + attackSeconds * 1000);
+            }
+
             const x = setInterval(function() {
-                const now = new Date().getTime();
+                const now = Date.now();
                 const distance = countDownDate.getTime() - now;
 
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
