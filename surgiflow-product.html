@@ -1,1204 +1,1720 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Surgiflow</title>
-<link rel="icon" type="image/png" href="assets/FRAMING.png">
-<link rel="apple-touch-icon" href="assets/FRAMING.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --black:#000000;
-  --white:#ffffff;
-  --gray1:#111111;
-  --gray2:#1a1a1a;
-  --gray3:#333333;
-  --gray4:#666666;
-  --gray5:#999999;
-  --blue:#4f8ef7;
-  --blue-dim:rgba(79,142,247,0.12);
-}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--black);
-  color:var(--white);
-  font-family:'Noto Sans KR','Inter',sans-serif;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-track{background:#000;}
-::-webkit-scrollbar-thumb{background:#333;}
-
-/* ─── NAV ─── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:999;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:24px 60px;
-  mix-blend-mode:difference;
-}
-.nav-logo{
-  font-size:1.8rem;font-weight:800;letter-spacing:0.2em;
-  text-transform:uppercase;color:#fff;text-decoration:none;
-}
-.nav-right{
-  display:flex;align-items:center;gap:40px;
-}
-.nav-link{
-  font-size:0.72rem;font-weight:400;letter-spacing:0.12em;
-  text-transform:uppercase;color:rgba(255,255,255,0.5);
-  text-decoration:none;transition:color 0.2s;
-}
-.nav-link:hover{color:#fff;}
-.nav-tag{
-  font-size:0.72rem;font-weight:400;letter-spacing:0.12em;
-  text-transform:uppercase;color:rgba(255,255,255,0.5);
-  text-decoration:none;transition:color 0.2s;
-}
-
-/* ─── CANVAS BG ─── */
-#particle-canvas{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  pointer-events:none;z-index:0;opacity:0.4;
-}
-
-/* ─── HERO ─── */
-.hero{
-  position:relative;z-index:1;
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:120px 60px 80px;
-}
-.hero-top{
-  width:100%;
-  text-align:center;
-  padding:0;
-}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:14px;
-  font-size:1rem;font-weight:400;letter-spacing:0.14em;
-  text-transform:uppercase;color:rgba(255,255,255,0.5);
-  margin-bottom:40px;
-  justify-content:center;
-}
-.hero-eyebrow::before{
-  content:'';display:block;
-  width:32px;height:1px;background:rgba(255,255,255,0.25);
-}
-h1.hero-title{
-  font-size:clamp(4.2rem,9vw,8rem);
-  font-weight:900;
-  letter-spacing:-0.04em;
-  line-height:0.95;
-  color:#fff;
-  margin-bottom:56px;
-  min-height:3em;
-}
-h1.hero-title em{
-  font-style:normal;
-  -webkit-text-stroke:1px rgba(255,255,255,0.3);
-  color:transparent;
-}
-.hero-cursor{
-  display:inline-block;
-  font-weight:200;
-  color:rgba(255,255,255,0.4);
-  animation:heroBlink 1s infinite;
-  margin-left:2px;
-}
-@keyframes heroBlink{
-  0%,50%{opacity:1;}
-  51%,100%{opacity:0;}
-}
-.hero-desc{
-  font-size:1.1rem;font-weight:300;
-  color:rgba(255,255,255,0.45);
-  max-width:580px;line-height:1.8;
-  letter-spacing:0.01em;
-  margin:0 auto 48px;
-  text-align:center;
-}
-.hero-bottom{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;
-  padding-top:0;
-  margin-top:260px;
-  position:relative;z-index:1;
-}
-.hero-stat-row{
-  display:flex;gap:80px;justify-content:center;
-  border-top:1px solid rgba(255,255,255,0.12);
-  padding-top:36px;
-}
-.hero-stat-item{text-align:center;}
-.hero-stat-num{
-  font-size:2.2rem;font-weight:700;
-  letter-spacing:-0.02em;color:#fff;
-  line-height:1;
-}
-.hero-stat-label{
-  font-size:0.65rem;font-weight:400;
-  color:rgba(255,255,255,0.3);letter-spacing:0.1em;
-  text-transform:uppercase;margin-top:14px;
-}
-.hero-scroll{
-  font-size:0.65rem;letter-spacing:0.15em;
-  text-transform:uppercase;color:rgba(255,255,255,0.25);
-  display:flex;align-items:center;gap:12px;
-}
-.hero-scroll::after{
-  content:'';display:block;
-  width:40px;height:1px;background:rgba(255,255,255,0.15);
-}
-
-/* ─── SECTION BASE ─── */
-.section{
-  position:relative;z-index:1;
-  padding:220px 60px;
-}
-.section-inner{max-width:1200px;margin:0 auto;}
-
-/* ─── REVEAL ANIM ─── */
-.reveal{
-  opacity:0;transform:translateY(40px);
-  transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),
-              transform 0.9s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.reveal-d1{transition-delay:0.1s;}
-.reveal-d2{transition-delay:0.2s;}
-.reveal-d3{transition-delay:0.3s;}
-.reveal-d4{transition-delay:0.4s;}
-
-/* ─── LABEL ─── */
-.label{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:0.65rem;font-weight:500;letter-spacing:0.2em;
-  text-transform:uppercase;color:rgba(255,255,255,0.3);
-  margin-bottom:28px;
-}
-.label::before{
-  content:'';width:20px;height:1px;
-  background:rgba(255,255,255,0.25);
-}
-
-/* ─── BIG HEADING ─── */
-.big-heading{
-  font-size:clamp(2.2rem,5vw,4rem);
-  font-weight:800;letter-spacing:-0.03em;
-  line-height:1.05;color:#fff;
-}
-.big-heading .dim{color:rgba(255,255,255,0.2);}
-
-/* ─── DIVIDER ─── */
-.h-line{
-  width:100%;height:1px;
-  background:rgba(255,255,255,0.06);
-  position:relative;z-index:1;
-}
-
-/* ─── PROBLEM ─── */
-.problem-layout{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.06);
-  margin-top:80px;
-}
-.problem-card{
-  background:#000;padding:56px 48px;
-  transition:background 0.4s;
-}
-.problem-card:hover{}
-.pc-tag{
-  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.25);margin-bottom:32px;
-}
-.pc-title{
-  font-size:1.5rem;font-weight:700;
-  letter-spacing:-0.02em;color:#fff;margin-bottom:32px;
-  line-height:1.3;
-}
-.pc-list{list-style:none;}
-.pc-list li{
-  display:flex;gap:16px;
-  font-size:0.85rem;font-weight:300;
-  color:rgba(255,255,255,0.4);
-  padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-  line-height:1.6;
-}
-.pc-list li:last-child{border-bottom:none;}
-.pc-list li span{
-  flex-shrink:0;font-size:0.6rem;
-  color:rgba(255,255,255,0.15);
-  margin-top:4px;letter-spacing:0.05em;
-}
-
-/* ─── FEATURES ─── */
-.features-intro{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:80px;align-items:end;
-  margin-bottom:80px;
-}
-.features-sub{
-  font-size:0.9rem;font-weight:300;
-  color:rgba(255,255,255,0.35);
-  line-height:1.9;max-width:400px;
-  align-self:end;
-}
-.features-grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.06);
-}
-.feat-card{
-  background:#000;padding:48px 40px;
-  transition:background 0.4s;
-  position:relative;overflow:hidden;
-}
-.feat-card::after{
-  content:'';position:absolute;
-  bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(79,142,247,0),transparent);
-  transition:background 0.4s;
-}
-.feat-card:hover{}
-.feat-card:hover::after{
-  background:linear-gradient(90deg,transparent,rgba(79,142,247,0.4),transparent);
-}
-.feat-num{
-  font-size:0.6rem;font-weight:600;letter-spacing:0.2em;
-  color:rgba(255,255,255,0.15);margin-bottom:40px;
-  font-variant-numeric:tabular-nums;
-}
-.feat-title{
-  font-size:1.15rem;font-weight:700;
-  letter-spacing:-0.02em;color:#fff;margin-bottom:12px;
-}
-.feat-desc{
-  font-size:0.82rem;font-weight:300;
-  color:rgba(255,255,255,0.35);line-height:1.75;
-}
-
-/* ─── FLOW ─── */
-.flow-section{background:#050505;}
-.flow-steps{
-  display:flex;gap:0;
-  border:1px solid rgba(255,255,255,0.06);
-  margin-top:80px;
-}
-.flow-step{
-  flex:1;padding:56px 40px;
-  border-right:1px solid rgba(255,255,255,0.06);
-  position:relative;
-}
-.flow-step:last-child{border-right:none;}
-.flow-step-num{
-  font-size:3rem;font-weight:900;
-  letter-spacing:-0.04em;
-  color:rgba(255,255,255,0.04);
-  line-height:1;margin-bottom:40px;
-}
-.flow-step-title{
-  font-size:1rem;font-weight:700;
-  color:#fff;margin-bottom:12px;
-}
-.flow-step-desc{
-  font-size:0.78rem;font-weight:300;
-  color:rgba(255,255,255,0.3);
-  line-height:1.7;
-}
-.flow-arrow{
-  position:absolute;right:-14px;top:50%;
-  transform:translateY(-50%);
-  width:28px;height:28px;
-  background:#0a0a0a;border:1px solid rgba(255,255,255,0.12);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  z-index:2;
-}
-.flow-arrow svg{
-  width:10px;height:10px;
-  stroke:rgba(255,255,255,0.3);
-  stroke-width:1.8;
-  fill:none;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-  display:block;
-}
-.flow-step:last-child .flow-arrow{display:none;}
-
-/* ─── PRODUCTS ─── */
-.products-row{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:1px;background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.06);
-  margin-top:80px;
-}
-.prod-card{
-  background:#000;padding:56px 40px;
-  transition:background 0.3s;
-}
-.prod-card:hover{}
-.prod-idx{
-  font-size:0.6rem;font-weight:600;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:rgba(255,255,255,0.15);margin-bottom:48px;
-  display:flex;align-items:center;gap:12px;
-}
-.prod-idx::after{
-  content:'';flex:1;height:1px;
-  background:rgba(255,255,255,0.07);
-}
-.prod-icon{
-  width:40px;height:40px;margin-bottom:28px;
-  display:block;opacity:0.7;
-}
-.prod-title{
-  font-size:1.05rem;font-weight:700;
-  color:#fff;margin-bottom:10px;
-  letter-spacing:-0.01em;
-}
-.prod-desc{
-  font-size:0.8rem;font-weight:300;
-  color:rgba(255,255,255,0.3);
-  line-height:1.75;
-}
-
-/* ─── MARKET NUMBERS ─── */
-.market-section{background:#000;}
-.market-numbers{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  border-top:1px solid rgba(255,255,255,0.06);
-  border-left:1px solid rgba(255,255,255,0.06);
-  margin-top:80px;
-}
-.mnum-card{
-  padding:60px 48px;
-  border-right:1px solid rgba(255,255,255,0.06);
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.mnum-scope{
-  font-size:0.6rem;font-weight:600;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:rgba(255,255,255,0.2);margin-bottom:20px;
-}
-.mnum-val{
-  font-size:2.8rem;font-weight:900;
-  letter-spacing:-0.04em;color:#fff;
-  line-height:1;margin-bottom:10px;
-}
-.mnum-desc{
-  font-size:0.75rem;font-weight:300;
-  color:rgba(255,255,255,0.25);line-height:1.6;
-}
-
-/* ─── PHASE / ROADMAP ─── */
-.roadmap-section{background:#040404;}
-.phase-rows{margin-top:80px;}
-.phase-row{
-  display:flex;align-items:stretch;
-  border-top:1px solid rgba(255,255,255,0.06);
-  transition:background 0.3s;
-}
-.phase-row:last-child{border-bottom:1px solid rgba(255,255,255,0.06);}
-.phase-row:hover{background:rgba(255,255,255,0.02);}
-.phase-tag-col{
-  width:180px;flex-shrink:0;
-  padding:40px 40px;
-  border-right:1px solid rgba(255,255,255,0.06);
-  display:flex;align-items:flex-start;
-}
-.phase-tag{
-  font-size:0.65rem;font-weight:600;
-  letter-spacing:0.12em;text-transform:uppercase;
-  padding:5px 12px;border-radius:2px;
-}
-.ph0{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
-.ph1{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
-.ph2{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
-.ph3{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
-.phase-body{
-  flex:1;padding:40px 48px;
-}
-.phase-title{
-  font-size:1rem;font-weight:700;
-  color:#fff;margin-bottom:6px;
-}
-.phase-desc{
-  font-size:0.8rem;font-weight:300;
-  color:rgba(255,255,255,0.3);line-height:1.7;
-}
-.phase-date{
-  width:120px;flex-shrink:0;
-  padding:0 40px;
-  border-left:1px solid rgba(255,255,255,0.06);
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.75rem;font-weight:400;
-  color:rgba(255,255,255,0.25);letter-spacing:0.05em;
-  font-variant-numeric:tabular-nums;
-}
-
-/* ─── CTA ─── */
-.cta-section{
-  position:relative;overflow:hidden;
-  padding:180px 60px;text-align:center;
-  background:#000;
-}
-.cta-glow{
-  position:absolute;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-  width:600px;height:300px;
-  background:radial-gradient(ellipse, rgba(79,142,247,0.08) 0%, transparent 70%);
-  pointer-events:none;
-}
-.cta-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;}
-.cta-title{
-  font-size:clamp(2.5rem,5vw,4.5rem);
-  font-weight:900;letter-spacing:-0.04em;
-  line-height:1;margin-bottom:24px;
-}
-.cta-sub{
-  font-size:0.9rem;font-weight:300;
-  color:rgba(255,255,255,0.35);
-  line-height:1.8;margin-bottom:56px;
-}
-.cta-btn{
-  display:inline-flex;align-items:center;gap:14px;
-  background:#fff;color:#000;
-  font-size:0.8rem;font-weight:700;
-  letter-spacing:0.1em;text-transform:uppercase;
-  padding:18px 44px;text-decoration:none;
-  transition:all 0.3s;
-  cursor:pointer;border:none;
-}
-.cta-btn:hover{
-  background:transparent;color:#fff;
-  outline:1px solid rgba(255,255,255,0.4);
-}
-.cta-btn svg{transition:transform 0.3s;}
-.cta-btn:hover svg{transform:translateX(4px);}
-
-/* ─── FOOTER ─── */
-footer{
-  border-top:1px solid rgba(255,255,255,0.06);
-  padding:40px 60px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:relative;z-index:1;
-}
-.foot-logo{
-  font-size:0.85rem;font-weight:800;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:rgba(255,255,255,0.5);
-}
-.foot-copy{
-  font-size:0.65rem;font-weight:300;
-  color:rgba(255,255,255,0.15);letter-spacing:0.08em;
-}
-.foot-loc{
-  font-size:0.65rem;font-weight:300;
-  color:rgba(255,255,255,0.15);letter-spacing:0.08em;
-}
-
-/* ─── CANVAS SECTION BG ─── */
-.canvas-section{
-  position:relative;
-}
-#wave-canvas{
-  position:absolute;inset:0;width:100%;height:100%;
-  opacity:0.15;pointer-events:none;
-}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:900px){
-  /* NAV */
-  nav{padding:18px 20px;}
-  .nav-logo{font-size:1.1rem;}
-  .nav-right{gap:16px;}
-  .nav-link{font-size:0.62rem;}
-  .nav-tag{font-size:0.62rem;}
-
-  /* HERO — absolute 제거, 일반 flex 흐름으로 */
-  .hero{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    padding:100px 24px 60px;
-  }
-  .hero-top{
-    position:static;
-    transform:none;
-    width:100%;
-    padding:0;
-    text-align:center;
-  }
-  .hero-eyebrow{font-size:0.7rem;margin-bottom:20px;}
-  h1.hero-title{
-    font-size:clamp(2.4rem,9vw,3.6rem);
-    margin-bottom:20px;
-    line-height:1;
-  }
-  .hero-desc{font-size:0.85rem;max-width:100%;line-height:1.7;}
-  .hero-bottom{
-    width:100%;
-    margin-top:56px;
-    flex-direction:column;
-    align-items:center;
-  }
-  .hero-stat-row{
-    gap:32px;
-    flex-wrap:wrap;
-    justify-content:center;
-    width:100%;
-  }
-  .hero-stat-num{font-size:1.8rem;}
-
-  /* SECTIONS */
-  .section{padding:80px 20px;}
-  .section-inner{max-width:100%;}
-  .big-heading{font-size:clamp(1.6rem,5vw,2.4rem);}
-
-  /* CARDS */
-  .problem-layout,.features-grid,.products-row{grid-template-columns:1fr;}
-  .problem-card,.feat-card,.prod-card{padding:32px 24px;}
-  .features-intro{grid-template-columns:1fr;gap:28px;}
-
-  /* MARKET */
-  .market-numbers{grid-template-columns:1fr;}
-  .mnum-card{padding:36px 24px;}
-
-  /* FLOW */
-  .flow-steps{flex-direction:column;}
-  .flow-step{
-    border-right:none;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    padding:32px 24px;
-  }
-  .flow-step:last-child{border-bottom:none;}
-  .flow-arrow{display:none!important;}
-
-  /* ROADMAP */
-  .phase-row{flex-wrap:wrap;}
-  .phase-tag-col{
-    width:100%;padding:18px 20px 0;
-    border-right:none;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-  }
-  .phase-body{padding:18px 20px;}
-  .phase-date{
-    width:100%;padding:12px 20px;
-    border-left:none;
-    border-top:1px solid rgba(255,255,255,0.06);
-    justify-content:flex-start;
-  }
-
-  /* CTA */
-  .cta-section{padding:80px 20px;}
-  .cta-title{font-size:clamp(2rem,7vw,3rem);}
-  .cta-sub{font-size:0.85rem;}
-
-  /* FOOTER */
-  footer{flex-direction:column;gap:16px;text-align:center;padding:32px 20px;}
-  footer img{height:56px!important;}
-}
-
-@media(max-width:480px){
-  nav{padding:14px 16px;overflow:hidden;}
-  .nav-logo{font-size:0.95rem;}
-  .nav-link{display:none;}
-  .nav-right{gap:12px;}
-
-  .hero{padding:90px 16px 48px;}
-  h1.hero-title{font-size:clamp(2rem,8vw,2.8rem);}
-  .hero-desc{font-size:0.8rem;}
-  .hero-stat-row{gap:24px;}
-  .hero-stat-num{font-size:1.5rem;}
-
-  .section{padding:60px 16px;}
-  .problem-card,.feat-card,.prod-card{padding:24px 18px;}
-  .mnum-card{padding:28px 18px;}
-  .flow-step{padding:24px 18px;}
-  .cta-btn{padding:14px 28px;font-size:0.75rem;}
-}
-</style>
-</head>
-<body>
-
-<!-- PARTICLE CANVAS -->
-<canvas id="particle-canvas"></canvas>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">Surgiflow</a>
-  <div class="nav-right">
-    <a href="#features" class="nav-link">Solution</a>
-    <a href="#products" class="nav-link">Products</a>
-    <a href="#roadmap" class="nav-link">Roadmap</a>
-    <a href="index.html" class="nav-tag">Coming Soon</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-top">
-    <div class="hero-eyebrow">AI 수술 데이터 관리 플랫폼</div>
-    <h1 class="hero-title" id="heroTitle"></h1>
-  </div>
-  <div class="hero-bottom">
-    <p class="hero-desc">
-      의사의 기존 행위 그대로, 데이터는 자동으로 구조화됩니다.<br/>
-      추가 업무 없이 디지털 전환되는 LLM 기반 플랫폼.
-    </p>
-    <div class="hero-stat-row">
-      <div class="hero-stat-item">
-        <div class="hero-stat-num" data-target="3,000">0</div>
-        <div class="hero-stat-label">수술 활동 정형외과 전문의</div>
-      </div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-num" data-target="7,400만">0</div>
-        <div class="hero-stat-label">정형외과 연간 외래 건수</div>
-      </div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-num" data-target="0개">0</div>
-        <div class="hero-stat-label">국내 수술 데이터 플랫폼</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- PROBLEM -->
-<section class="section" id="problem">
-  <div class="section-inner">
-    <div class="reveal"><span class="label">Problem</span></div>
-    <h2 class="big-heading reveal reveal-d1">
-      수술실 안과 밖,<br/>
-      <span class="dim">정보는 단절되어 있습니다</span>
-    </h2>
-    <div class="problem-layout">
-      <div class="problem-card reveal reveal-d2">
-        <div class="pc-tag">의사의 일상 — 수술실 밖 정보 단절</div>
-        <div class="pc-title">병원 EMR 밖에서는<br/>아무것도 볼 수 없다</div>
-        <ul class="pc-list">
-          <li><span>01</span>수술 스케줄은 병원 EMR에서만 — 퇴근 후 당직에게 전화로 확인</li>
-          <li><span>02</span>관절경 영상 수백 건을 폴더 하나하나 수동 탐색</li>
-          <li><span>03</span>통계 낼 때마다 엑셀로 수동 입력 반복</li>
-          <li><span>04</span>비서 퇴사 시 데이터 소멸, 구조화 불가</li>
-        </ul>
-      </div>
-      <div class="problem-card reveal reveal-d3">
-        <div class="pc-tag">환자의 일상 — 수술 후 정보 공백</div>
-        <div class="pc-title">퇴원 후 환자는<br/>정보 사각지대에 놓인다</div>
-        <ul class="pc-list">
-          <li><span>01</span>퇴원 재활 안내문 40% 이상 분실 — A4 한 장이 전부</li>
-          <li><span>02</span>퇴원 후 2~4주 정보 완전 단절</li>
-          <li><span>03</span>"이게 정상인지?" 불안 → 응급실 방문</li>
-          <li><span>04</span>디지털 사후관리 플랫폼 국내 0개</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- FEATURES -->
-<section class="section canvas-section" id="features">
-  <canvas id="wave-canvas"></canvas>
-  <div class="section-inner">
-    <div class="features-intro">
-      <div>
-        <div class="reveal"><span class="label">Solution</span></div>
-        <h2 class="big-heading reveal reveal-d1">
-          추가 업무가 아닌,<br/>
-          <span class="dim">기존 업무의<br/>디지털 전환</span>
-        </h2>
-      </div>
-      <p class="features-sub reveal reveal-d2">
-        의사가 이미 하고 있는 행위의 부산물로<br/>
-        데이터가 자동 구조화됩니다.<br/>
-        Surgiflow는 워크플로우를 바꾸지 않습니다.
-      </p>
-    </div>
-    <div class="features-grid">
-      <div class="feat-card reveal reveal-d1">
-        <div class="feat-num">01</div>
-        <div class="feat-title">수술 스케줄 모바일 뷰어</div>
-        <p class="feat-desc">병원 EMR 없이도 스마트폰에서 언제 어디서나 확인. 30초 입력으로 케이스 등록 완료.</p>
-      </div>
-      <div class="feat-card reveal reveal-d2">
-        <div class="feat-num">02</div>
-        <div class="feat-title">관절경 영상 키워드 검색</div>
-        <p class="feat-desc">OCR/NLP 기반 술식·임플란트 키워드 즉시 검색. 수동 폴더 탐색이 완전히 사라집니다.</p>
-      </div>
-      <div class="feat-card reveal reveal-d3">
-        <div class="feat-num">03</div>
-        <div class="feat-title">LLM 수술 기록 자동 구조화</div>
-        <p class="feat-desc">음성·텍스트 입력 → 정형 변수 자동 변환. 수술 패턴 리포트와 케이스 포트폴리오가 자동 생성됩니다.</p>
-      </div>
-      <div class="feat-card reveal reveal-d4">
-        <div class="feat-num">04</div>
-        <div class="feat-title">환자 재활 프로토콜 앱 발송</div>
-        <p class="feat-desc">QR 스캔 → 앱 연결 → 2주·4주·8주 시점별 맞춤 재활 가이드 자동 제공.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- FLOW -->
-<section class="section flow-section" id="how">
-  <div class="section-inner">
-    <div class="reveal"><span class="label">How It Works</span></div>
-    <h2 class="big-heading reveal reveal-d1">
-      30초 입력,<br/><span class="dim">이후는 자동</span>
-    </h2>
-    <div class="flow-steps">
-      <div class="flow-step reveal reveal-d1">
-        <div class="flow-step-num">01</div>
-        <div class="flow-step-title">의사 케이스 입력</div>
-        <p class="flow-step-desc">수술 정보 30초 입력<br/>술식·임플란트·특이사항</p>
-        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
-      </div>
-      <div class="flow-step reveal reveal-d2">
-        <div class="flow-step-num">02</div>
-        <div class="flow-step-title">QR 자동 생성</div>
-        <p class="flow-step-desc">비식별 케이스번호 기반<br/>고유 QR 코드 자동 발급</p>
-        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
-      </div>
-      <div class="flow-step reveal reveal-d3">
-        <div class="flow-step-num">03</div>
-        <div class="flow-step-title">퇴원 시 전달</div>
-        <p class="flow-step-desc">간호사 퇴원교육 시<br/>QR 안내문 수령</p>
-        <div class="flow-arrow"><svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8"/></svg></div>
-      </div>
-      <div class="flow-step reveal reveal-d4">
-        <div class="flow-step-num">04</div>
-        <div class="flow-step-title">환자 자발적 연결</div>
-        <p class="flow-step-desc">QR 스캔 → 앱 가입<br/>재활 프로토콜 자동 수신</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- PRODUCTS -->
-<section class="section" id="products">
-  <div class="section-inner">
-    <div class="reveal"><span class="label">Products</span></div>
-    <h2 class="big-heading reveal reveal-d1">
-      세 가지 제품,<br/><span class="dim">하나의 플랫폼</span>
-    </h2>
-    <div class="products-row">
-      <div class="prod-card reveal reveal-d1">
-        <div class="prod-idx">Product 01</div>
-        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="12" y="4" width="16" height="28" rx="3"/>
-          <line x1="16" y1="9" x2="24" y2="9"/>
-          <line x1="16" y1="13" x2="24" y2="13"/>
-          <line x1="16" y1="17" x2="21" y2="17"/>
-          <circle cx="20" cy="27" r="2"/>
-        </svg>
-        <div class="prod-title">의사용 모바일 앱</div>
-        <p class="prod-desc">수술 스케줄 확인, 케이스 입력, 관절경 영상 검색, 자동 패턴 리포트를 스마트폰 하나로.</p>
-      </div>
-      <div class="prod-card reveal reveal-d2">
-        <div class="prod-idx">Product 02</div>
-        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="20" cy="10" r="4"/>
-          <path d="M12 28 C12 22 28 22 28 28"/>
-          <path d="M16 28 L16 36"/>
-          <path d="M24 28 L24 36"/>
-          <path d="M13 32 L27 32"/>
-          <path d="M28 18 L32 22 M32 18 L28 22"/>
-        </svg>
-        <div class="prod-title">환자용 모바일 앱</div>
-        <p class="prod-desc">맞춤형 재활 프로토콜, X-ray 회복 타임라인, 날짜별 운동 가이드를 자동으로 제공.</p>
-      </div>
-      <div class="prod-card reveal reveal-d3">
-        <div class="prod-idx">Product 03</div>
-        <svg class="prod-icon" viewBox="0 0 40 40" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="4" y="6" width="32" height="22" rx="2"/>
-          <line x1="14" y1="34" x2="26" y2="34"/>
-          <line x1="20" y1="28" x2="20" y2="34"/>
-          <circle cx="20" cy="17" r="5"/>
-          <line x1="24" y1="21" x2="28" y2="25"/>
-        </svg>
-        <div class="prod-title">PC 로컬 영상 아카이빙</div>
-        <p class="prod-desc">관절경 영상 원본 PC 보관, DICOM 제거 후 비식별 메타 클라우드 동기화 및 키워드 검색.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- MARKET -->
-<section class="section market-section" id="market">
-  <div class="section-inner">
-    <div class="reveal"><span class="label">Market</span></div>
-    <h2 class="big-heading reveal reveal-d1">
-      국내 최초,<br/><span class="dim">글로벌 확장 가능한 시장</span>
-    </h2>
-    <div class="market-numbers">
-      <div class="mnum-card reveal reveal-d1">
-        <div class="mnum-scope">TAM · Global</div>
-        <div class="mnum-val" data-target="$32.9B">$0B</div>
-        <p class="mnum-desc">글로벌 수술 디지털 플랫폼 + EMR 시장 (2031년 기준)</p>
-      </div>
-      <div class="mnum-card reveal reveal-d2">
-        <div class="mnum-scope">SAM · Korea</div>
-        <div class="mnum-val" data-target="2,000억">0억</div>
-        <p class="mnum-desc">국내 외과 계열 수술 데이터 관리 시장 전체</p>
-      </div>
-      <div class="mnum-card reveal reveal-d3">
-        <div class="mnum-scope">SOM · 초기 3년</div>
-        <div class="mnum-val" data-target="30억">0억</div>
-        <p class="mnum-desc">2·3차 병원 정형외과 의사 500명 기준 목표 매출</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- ROADMAP -->
-<section class="section roadmap-section" id="roadmap">
-  <div class="section-inner">
-    <div class="reveal"><span class="label">Roadmap</span></div>
-    <h2 class="big-heading reveal reveal-d1">
-      규제를 설계에 녹인<br/><span class="dim">단계별 성장 전략</span>
-    </h2>
-    <div class="phase-rows" style="margin-top:80px;">
-      <div class="phase-row reveal reveal-d1">
-        <div class="phase-tag-col"><span class="phase-tag ph0">Phase 0–1</span></div>
-        <div class="phase-body">
-          <div class="phase-title">비의료기기 MVP</div>
-          <p class="phase-desc">수술 스케줄, 영상 아카이빙, 키워드 검색, 범용 재활 — 인허가 불필요, 리스크 제로 출시</p>
-        </div>
-        <div class="phase-date">'26.12</div>
-      </div>
-      <div class="phase-row reveal reveal-d2">
-        <div class="phase-tag-col"><span class="phase-tag ph1">Phase 1</span></div>
-        <div class="phase-body">
-          <div class="phase-title">경량 자동화</div>
-          <p class="phase-desc">LLM 수술 기록 구조화, 수술 패턴 리포트, 예후 분석 — 비의료기기 상태 유지</p>
-        </div>
-        <div class="phase-date">'27</div>
-      </div>
-      <div class="phase-row reveal reveal-d3">
-        <div class="phase-tag-col"><span class="phase-tag ph2">Phase 2</span></div>
-        <div class="phase-body">
-          <div class="phase-title">예측 도입 (SaMD 경계)</div>
-          <p class="phase-desc">수술시간 예측, OR 스케줄 최적화 — IRB 승인, 혁신의료기기 신청</p>
-        </div>
-        <div class="phase-date">'28</div>
-      </div>
-      <div class="phase-row reveal reveal-d4">
-        <div class="phase-tag-col"><span class="phase-tag ph3">Phase 3–4</span></div>
-        <div class="phase-body">
-          <div class="phase-title">플랫폼화 + 차세대 EMR</div>
-          <p class="phase-desc">환자 회복 예측, EMR 연동, 타 외과 계열 확장, 일본·동남아·미국 글로벌 진출</p>
-        </div>
-        <div class="phase-date">'29~</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="h-line"></div>
-
-<!-- FOOTER -->
-<footer>
-  <span class="foot-logo">Surgiflow</span>
-  <span class="foot-copy">© 2026 Team Framing. All rights reserved.</span>
-  <img src="assets/FRAMING LEFTSIDE.png" alt="TEAM FRAMING" style="height:90px;width:auto;opacity:0.45;">
-</footer>
-
-<script>
-// ─── PARTICLE CANVAS ───
-(function(){
-  const canvas = document.getElementById('particle-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [], mouse = {x:0,y:0};
-
-  function resize(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  class Particle {
-    constructor(){
-      this.reset();
-    }
-    reset(){
-      this.x = Math.random() * W;
-      this.y = Math.random() * H;
-      this.size = Math.random() * 1.2 + 0.3;
-      this.speedX = (Math.random() - 0.5) * 0.3;
-      this.speedY = (Math.random() - 0.5) * 0.3;
-      this.opacity = Math.random() * 0.4 + 0.05;
-      this.life = Math.random() * 200 + 100;
-      this.maxLife = this.life;
-    }
-    update(){
-      this.x += this.speedX;
-      this.y += this.speedY;
-      this.life--;
-      if(this.life <= 0 || this.x < -10 || this.x > W+10 || this.y < -10 || this.y > H+10){
-        this.reset();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Surgiflow</title>
+    <link rel="icon" type="image/png" href="./assets/FRAMING.png" />
+    <link rel="apple-touch-icon" href="./assets/FRAMING.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/styles/index.css" />
+    <style>
+      :root {
+        --black: #000000;
+        --white: #ffffff;
+        --gray1: #111111;
+        --gray2: #1a1a1a;
+        --gray3: #333333;
+        --gray4: #666666;
+        --gray5: #999999;
+        --blue: #4f8ef7;
+        --blue-dim: rgba(79, 142, 247, 0.12);
       }
-    }
-    draw(){
-      const alpha = this.opacity * (this.life / this.maxLife);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-      ctx.fill();
-    }
-  }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--black);
+        color: var(--white);
+        font-family: "Noto Sans KR", "Inter", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
 
-  for(let i=0; i<120; i++) particles.push(new Particle());
+      /* ─── SCROLLBAR ─── */
+      ::-webkit-scrollbar {
+        width: 3px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+      }
 
-  // Draw connections
-  function drawLines(){
-    for(let i=0; i<particles.length; i++){
-      for(let j=i+1; j<particles.length; j++){
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist < 120){
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(255,255,255,${0.04 * (1 - dist/120)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
+      /* ─── NAV ─── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px 60px;
+        mix-blend-mode: difference;
+      }
+      .nav-logo {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #fff;
+        text-decoration: none;
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+      }
+      .nav-link {
+        font-size: 0.72rem;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .nav-link:hover {
+        color: #fff;
+      }
+      .nav-tag {
+        font-size: 0.72rem;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      /* ─── CANVAS BG ─── */
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.4;
+      }
+
+      /* ─── HERO ─── */
+      .hero {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 120px 60px 80px;
+      }
+      .hero-top {
+        width: 100%;
+        text-align: center;
+        padding: 0;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 40px;
+        justify-content: center;
+      }
+      .hero-eyebrow::before {
+        content: "";
+        display: block;
+        width: 32px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.25);
+      }
+      h1.hero-title {
+        font-size: clamp(4.2rem, 9vw, 8rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 0.95;
+        color: #fff;
+        margin-bottom: 56px;
+        min-height: 3em;
+      }
+      h1.hero-title em {
+        font-style: normal;
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+        color: transparent;
+      }
+      .hero-cursor {
+        display: inline-block;
+        font-weight: 200;
+        color: rgba(255, 255, 255, 0.4);
+        animation: heroBlink 1s infinite;
+        margin-left: 2px;
+      }
+      @keyframes heroBlink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
         }
       }
-    }
-  }
-
-  function animate(){
-    ctx.clearRect(0,0,W,H);
-    drawLines();
-    particles.forEach(p=>{ p.update(); p.draw(); });
-    requestAnimationFrame(animate);
-  }
-  animate();
-})();
-
-// ─── WAVE CANVAS ───
-(function(){
-  const canvas = document.getElementById('wave-canvas');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let t = 0;
-
-  function resize(){
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const W = canvas.width, H = canvas.height;
-    const cols = 60, rows = 20;
-    const cw = W/cols, ch = H/rows;
-    for(let r=0; r<rows; r++){
-      for(let c=0; c<cols; c++){
-        const x = c*cw + cw/2;
-        const y = r*ch + ch/2;
-        const wave = Math.sin(c*0.3 + r*0.5 + t) * 0.5 + 0.5;
-        const sz = wave * 1.5 + 0.2;
-        const alpha = wave * 0.25 + 0.02;
-        ctx.beginPath();
-        ctx.arc(x, y, sz, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-        ctx.fill();
+      .hero-desc {
+        font-size: 1.1rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.45);
+        max-width: 580px;
+        line-height: 1.8;
+        letter-spacing: 0.01em;
+        margin: 0 auto 48px;
+        text-align: center;
       }
-    }
-    t += 0.018;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
-
-// ─── HERO TYPING ───
-(function(){
-  const el = document.getElementById('heroTitle');
-  if(!el) return;
-
-  const chunks = [
-    {text:'Surgery', em:false},
-    {br:true},
-    {text:'Data',    em:true},
-    {br:true},
-    {text:'Flows.',  em:false},
-  ];
-
-  const chars = [];
-  chunks.forEach(c => {
-    if(c.br){ chars.push({br:true}); }
-    else { [...c.text].forEach(ch => chars.push({ch, em:c.em})); }
-  });
-
-  const TYPE_SPEED   = 130; // 타이핑 속도 (ms)
-  const DELETE_SPEED = 55;  // 삭제 속도
-  const PAUSE_AFTER  = 3200; // 완성 후 대기 (ms)
-  const PAUSE_BEFORE = 500;  // 재시작 전 대기
-
-  let typed = [];
-
-  function render(){
-    let html = '', inEm = false;
-    typed.forEach(c => {
-      if(c.br){
-        if(inEm){html+='</em>';inEm=false;}
-        html+='<br/>';
-      } else if(c.em && !inEm){
-        html+='<em>'+c.ch; inEm=true;
-      } else if(!c.em && inEm){
-        html+='</em>'+c.ch; inEm=false;
-      } else {
-        html+=c.ch;
+      .hero-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 0;
+        margin-top: 260px;
+        position: relative;
+        z-index: 1;
       }
-    });
-    if(inEm) html+='</em>';
-    // 커서 없음
-    el.innerHTML = html;
-  }
-
-  function typeNext(){
-    if(typed.length < chars.length){
-      typed.push(chars[typed.length]);
-      render();
-      const delay = typed[typed.length-1].br ? TYPE_SPEED * 1.5 : TYPE_SPEED;
-      setTimeout(typeNext, delay);
-    } else {
-      // 완성 — 잠시 대기 후 삭제 시작
-      setTimeout(deleteNext, PAUSE_AFTER);
-    }
-  }
-
-  function deleteNext(){
-    if(typed.length > 0){
-      typed.pop();
-      render();
-      setTimeout(deleteNext, DELETE_SPEED);
-    } else {
-      // 다 지움 — 잠시 후 재타이핑
-      setTimeout(typeNext, PAUSE_BEFORE);
-    }
-  }
-
-  setTimeout(typeNext, 500);
-})();
-
-// ─── CARD SPOTLIGHT ───
-(function(){
-  document.querySelectorAll('.feat-card, .flow-step, .problem-card, .prod-card, .mnum-card, .phase-row').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.background = `radial-gradient(320px circle at ${x}px ${y}px, rgba(79,142,247,0.08) 0%, #000 70%)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.background = '';
-    });
-  });
-})();
-
-// ─── SCROLL REVEAL ───
-(function(){
-  const els = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting) e.target.classList.add('visible');
-    });
-  },{threshold:0.12});
-  els.forEach(el => observer.observe(el));
-})();
-
-// ─── SLOT ROULETTE COUNTER ───
-(function(){
-  // parse "3,000"  "7,400만"  "0개"  "$32.9B"  "2,000억"  "30억"
-  function parse(raw){
-    const m = raw.match(/^(\$?)([\d,]+(?:\.\d+)?)(.*)$/);
-    if(!m) return null;
-    return {
-      prefix: m[1],
-      num: parseFloat(m[2].replace(/,/g,'')),
-      suffix: m[3],
-      hasComma: m[2].includes(','),
-      hasDecimal: m[2].includes('.')
-    };
-  }
-
-  function fmt(n, info){
-    if(info.hasComma) return Math.round(n).toLocaleString('en-US');
-    if(info.hasDecimal) return n.toFixed(1);
-    return Math.round(n).toString();
-  }
-
-  function roulette(el){
-    if(el.dataset.running) return;
-    el.dataset.running = '1';
-    const info = parse(el.dataset.target);
-    if(!info){ el.textContent = el.dataset.target; return; }
-
-    const TOTAL = 2200; // total ms — 느리고 부드럽게
-    const start = performance.now();
-
-    function tick(now){
-      const elapsed = now - start;
-      if(elapsed >= TOTAL){
-        el.textContent = el.dataset.target;
-        delete el.dataset.running;
-        return;
+      .hero-stat-row {
+        display: flex;
+        gap: 80px;
+        justify-content: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: 36px;
       }
-      const t = elapsed / TOTAL;
-      const ease = 1 - Math.pow(1 - t, 3);
-      const val = info.num * ease;
-      el.textContent = info.prefix + fmt(Math.min(val, info.num), info) + info.suffix;
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-
-  const els = document.querySelectorAll('[data-target]');
-  const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        roulette(e.target);
-      } else {
-        // 화면 벗어나면 리셋 → 다시 진입 시 재실행
-        delete e.target.dataset.running;
-        e.target.textContent = '0';
+      .hero-stat-item {
+        text-align: center;
       }
-    });
-  },{threshold:0.5});
-  els.forEach(el => obs.observe(el));
-})();
-</script>
-</body>
+      .hero-stat-num {
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #fff;
+        line-height: 1;
+      }
+      .hero-stat-label {
+        font-size: 0.65rem;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-top: 14px;
+      }
+      .hero-scroll {
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .hero-scroll::after {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      /* ─── SECTION BASE ─── */
+      .section {
+        position: relative;
+        z-index: 1;
+        padding: 220px 60px;
+      }
+      .section-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* ─── REVEAL ANIM ─── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition:
+          opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-d1 {
+        transition-delay: 0.1s;
+      }
+      .reveal-d2 {
+        transition-delay: 0.2s;
+      }
+      .reveal-d3 {
+        transition-delay: 0.3s;
+      }
+      .reveal-d4 {
+        transition-delay: 0.4s;
+      }
+
+      /* ─── LABEL ─── */
+      .label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 28px;
+      }
+      .label::before {
+        content: "";
+        width: 20px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      /* ─── BIG HEADING ─── */
+      .big-heading {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        color: #fff;
+      }
+      .big-heading .dim {
+        color: rgba(255, 255, 255, 0.2);
+      }
+
+      /* ─── DIVIDER ─── */
+      .h-line {
+        width: 100%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.06);
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ─── PROBLEM ─── */
+      .problem-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 80px;
+      }
+      .problem-card {
+        background: #000;
+        padding: 56px 48px;
+        transition: background 0.4s;
+      }
+      .pc-tag {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.25);
+        margin-bottom: 32px;
+      }
+      .pc-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #fff;
+        margin-bottom: 32px;
+        line-height: 1.3;
+      }
+      .pc-list {
+        list-style: none;
+      }
+      .pc-list li {
+        display: flex;
+        gap: 16px;
+        font-size: 0.85rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.4);
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        line-height: 1.6;
+      }
+      .pc-list li:last-child {
+        border-bottom: none;
+      }
+      .pc-list li span {
+        flex-shrink: 0;
+        font-size: 0.6rem;
+        color: rgba(255, 255, 255, 0.15);
+        margin-top: 4px;
+        letter-spacing: 0.05em;
+      }
+
+      /* ─── FEATURES ─── */
+      .features-intro {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: end;
+        margin-bottom: 80px;
+      }
+      .features-sub {
+        font-size: 0.9rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.35);
+        line-height: 1.9;
+        max-width: 400px;
+        align-self: end;
+      }
+      .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .feat-card {
+        background: #000;
+        padding: 48px 40px;
+        transition: background 0.4s;
+        position: relative;
+        overflow: hidden;
+      }
+      .feat-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(79, 142, 247, 0),
+          transparent
+        );
+        transition: background 0.4s;
+      }
+      .feat-card:hover::after {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(79, 142, 247, 0.4),
+          transparent
+        );
+      }
+      .feat-num {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        color: rgba(255, 255, 255, 0.15);
+        margin-bottom: 40px;
+        font-variant-numeric: tabular-nums;
+      }
+      .feat-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #fff;
+        margin-bottom: 12px;
+      }
+      .feat-desc {
+        font-size: 0.82rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.35);
+        line-height: 1.75;
+      }
+
+      /* ─── FLOW ─── */
+      .flow-section {
+        background: #050505;
+      }
+      .flow-steps {
+        display: flex;
+        gap: 0;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 80px;
+      }
+      .flow-step {
+        flex: 1;
+        padding: 56px 40px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        position: relative;
+      }
+      .flow-step:last-child {
+        border-right: none;
+      }
+      .flow-step-num {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: rgba(255, 255, 255, 0.04);
+        line-height: 1;
+        margin-bottom: 40px;
+      }
+      .flow-step-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 12px;
+      }
+      .flow-step-desc {
+        font-size: 0.78rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
+        line-height: 1.7;
+      }
+      .flow-arrow {
+        position: absolute;
+        right: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        background: #0a0a0a;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+      }
+      .flow-arrow svg {
+        width: 10px;
+        height: 10px;
+        stroke: rgba(255, 255, 255, 0.3);
+        stroke-width: 1.8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block;
+      }
+      .flow-step:last-child .flow-arrow {
+        display: none;
+      }
+
+      /* ─── PRODUCTS ─── */
+      .products-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 80px;
+      }
+      .prod-card {
+        background: #000;
+        padding: 56px 40px;
+        transition: background 0.3s;
+      }
+      .prod-idx {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.15);
+        margin-bottom: 48px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .prod-idx::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .prod-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 28px;
+        display: block;
+        opacity: 0.7;
+      }
+      .prod-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 10px;
+        letter-spacing: -0.01em;
+      }
+      .prod-desc {
+        font-size: 0.8rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
+        line-height: 1.75;
+      }
+
+      /* ─── MARKET NUMBERS ─── */
+      .market-section {
+        background: #000;
+      }
+      .market-numbers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-left: 1px solid rgba(255, 255, 255, 0.06);
+        margin-top: 80px;
+      }
+      .mnum-card {
+        padding: 60px 48px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .mnum-scope {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.2);
+        margin-bottom: 20px;
+      }
+      .mnum-val {
+        font-size: 2.8rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: #fff;
+        line-height: 1;
+        margin-bottom: 10px;
+      }
+      .mnum-desc {
+        font-size: 0.75rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.25);
+        line-height: 1.6;
+      }
+
+      /* ─── PHASE / ROADMAP ─── */
+      .roadmap-section {
+        background: #040404;
+      }
+      .phase-rows {
+        margin-top: 80px;
+      }
+      .phase-row {
+        display: flex;
+        align-items: stretch;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        transition: background 0.3s;
+      }
+      .phase-row:last-child {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .phase-row:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .phase-tag-col {
+        width: 180px;
+        flex-shrink: 0;
+        padding: 40px 40px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: flex-start;
+      }
+      .phase-tag {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border-radius: 2px;
+      }
+      .ph0 {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .ph1 {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .ph2 {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .ph3 {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.35);
+      }
+      .phase-body {
+        flex: 1;
+        padding: 40px 48px;
+      }
+      .phase-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+      .phase-desc {
+        font-size: 0.8rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
+        line-height: 1.7;
+      }
+      .phase-date {
+        width: 120px;
+        flex-shrink: 0;
+        padding: 0 40px;
+        border-left: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.25);
+        letter-spacing: 0.05em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ─── CTA ─── */
+      .cta-section {
+        position: relative;
+        overflow: hidden;
+        padding: 180px 60px;
+        text-align: center;
+        background: #000;
+      }
+      .cta-glow {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 300px;
+        background: radial-gradient(
+          ellipse,
+          rgba(79, 142, 247, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .cta-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .cta-title {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 24px;
+      }
+      .cta-sub {
+        font-size: 0.9rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.35);
+        line-height: 1.8;
+        margin-bottom: 56px;
+      }
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: #fff;
+        color: #000;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 18px 44px;
+        text-decoration: none;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: none;
+      }
+      .cta-btn:hover {
+        background: transparent;
+        color: #fff;
+        outline: 1px solid rgba(255, 255, 255, 0.4);
+      }
+      .cta-btn svg {
+        transition: transform 0.3s;
+      }
+      .cta-btn:hover svg {
+        transform: translateX(4px);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 40px 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
+      }
+      .foot-logo {
+        font-size: 0.85rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .foot-copy {
+        font-size: 0.65rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.15);
+        letter-spacing: 0.08em;
+      }
+      .foot-loc {
+        font-size: 0.65rem;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.15);
+        letter-spacing: 0.08em;
+      }
+
+      /* ─── CANVAS SECTION BG ─── */
+      .canvas-section {
+        position: relative;
+      }
+      #wave-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.15;
+        pointer-events: none;
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 900px) {
+        /* NAV */
+        nav {
+          padding: 18px 20px;
+        }
+        .nav-logo {
+          font-size: 1.1rem;
+        }
+        .nav-right {
+          gap: 16px;
+        }
+        .nav-link {
+          font-size: 0.62rem;
+        }
+        .nav-tag {
+          font-size: 0.62rem;
+        }
+
+        /* HERO — absolute 제거, 일반 flex 흐름으로 */
+        .hero {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 100px 24px 60px;
+        }
+        .hero-top {
+          position: static;
+          transform: none;
+          width: 100%;
+          padding: 0;
+          text-align: center;
+        }
+        .hero-eyebrow {
+          font-size: 0.7rem;
+          margin-bottom: 20px;
+        }
+        h1.hero-title {
+          font-size: clamp(2.4rem, 9vw, 3.6rem);
+          margin-bottom: 20px;
+          line-height: 1;
+        }
+        .hero-desc {
+          font-size: 0.85rem;
+          max-width: 100%;
+          line-height: 1.7;
+        }
+        .hero-bottom {
+          width: 100%;
+          margin-top: 56px;
+          flex-direction: column;
+          align-items: center;
+        }
+        .hero-stat-row {
+          gap: 32px;
+          flex-wrap: wrap;
+          justify-content: center;
+          width: 100%;
+        }
+        .hero-stat-num {
+          font-size: 1.8rem;
+        }
+
+        /* SECTIONS */
+        .section {
+          padding: 80px 20px;
+        }
+        .section-inner {
+          max-width: 100%;
+        }
+        .big-heading {
+          font-size: clamp(1.6rem, 5vw, 2.4rem);
+        }
+
+        /* CARDS */
+        .problem-layout,
+        .features-grid,
+        .products-row {
+          grid-template-columns: 1fr;
+        }
+        .problem-card,
+        .feat-card,
+        .prod-card {
+          padding: 32px 24px;
+        }
+        .features-intro {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+
+        /* MARKET */
+        .market-numbers {
+          grid-template-columns: 1fr;
+        }
+        .mnum-card {
+          padding: 36px 24px;
+        }
+
+        /* FLOW */
+        .flow-steps {
+          flex-direction: column;
+        }
+        .flow-step {
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 32px 24px;
+        }
+        .flow-step:last-child {
+          border-bottom: none;
+        }
+        .flow-arrow {
+          display: none !important;
+        }
+
+        /* ROADMAP */
+        .phase-row {
+          flex-wrap: wrap;
+        }
+        .phase-tag-col {
+          width: 100%;
+          padding: 18px 20px 0;
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .phase-body {
+          padding: 18px 20px;
+        }
+        .phase-date {
+          width: 100%;
+          padding: 12px 20px;
+          border-left: none;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          justify-content: flex-start;
+        }
+
+        /* CTA */
+        .cta-section {
+          padding: 80px 20px;
+        }
+        .cta-title {
+          font-size: clamp(2rem, 7vw, 3rem);
+        }
+        .cta-sub {
+          font-size: 0.85rem;
+        }
+
+        /* FOOTER */
+        footer {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+          padding: 32px 20px;
+        }
+        footer img {
+          height: 56px !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        nav {
+          padding: 14px 16px;
+          overflow: hidden;
+        }
+        .nav-logo {
+          font-size: 0.95rem;
+        }
+        .nav-link {
+          display: none;
+        }
+        .nav-right {
+          gap: 12px;
+        }
+
+        .hero {
+          padding: 90px 16px 48px;
+        }
+        h1.hero-title {
+          font-size: clamp(2rem, 8vw, 2.8rem);
+        }
+        .hero-desc {
+          font-size: 0.8rem;
+        }
+        .hero-stat-row {
+          gap: 24px;
+        }
+        .hero-stat-num {
+          font-size: 1.5rem;
+        }
+
+        .section {
+          padding: 60px 16px;
+        }
+        .problem-card,
+        .feat-card,
+        .prod-card {
+          padding: 24px 18px;
+        }
+        .mnum-card {
+          padding: 28px 18px;
+        }
+        .flow-step {
+          padding: 24px 18px;
+        }
+        .cta-btn {
+          padding: 14px 28px;
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- PARTICLE CANVAS -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- NAV -->
+    <nav>
+      <a href="#" class="nav-logo">Surgiflow</a>
+      <div class="nav-right">
+        <a href="#features" class="nav-link">Solution</a>
+        <a href="#products" class="nav-link">Products</a>
+        <a href="#roadmap" class="nav-link">Roadmap</a>
+        <a href="index.html" class="nav-tag">Coming Soon</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-top">
+        <div class="hero-eyebrow">AI 수술 데이터 관리 플랫폼</div>
+        <h1 class="hero-title" id="heroTitle"></h1>
+      </div>
+      <div class="hero-bottom">
+        <p class="hero-desc">
+          의사의 기존 행위 그대로, 데이터는 자동으로 구조화됩니다.<br />
+          추가 업무 없이 디지털 전환되는 LLM 기반 플랫폼.
+        </p>
+        <div class="hero-stat-row">
+          <div class="hero-stat-item">
+            <div class="hero-stat-num" data-target="3,000">0</div>
+            <div class="hero-stat-label">수술 활동 정형외과 전문의</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num" data-target="7,400만">0</div>
+            <div class="hero-stat-label">정형외과 연간 외래 건수</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num" data-target="0개">0</div>
+            <div class="hero-stat-label">국내 수술 데이터 플랫폼</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- PROBLEM -->
+    <section class="section" id="problem">
+      <div class="section-inner">
+        <div class="reveal"><span class="label">Problem</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          수술실 안과 밖,<br />
+          <span class="dim">정보는 단절되어 있습니다</span>
+        </h2>
+        <div class="problem-layout">
+          <div class="problem-card reveal reveal-d2">
+            <div class="pc-tag">의사의 일상 — 수술실 밖 정보 단절</div>
+            <div class="pc-title">
+              병원 EMR 밖에서는<br />아무것도 볼 수 없다
+            </div>
+            <ul class="pc-list">
+              <li>
+                <span>01</span>수술 스케줄은 병원 EMR에서만 — 퇴근 후 당직에게
+                전화로 확인
+              </li>
+              <li>
+                <span>02</span>관절경 영상 수백 건을 폴더 하나하나 수동 탐색
+              </li>
+              <li><span>03</span>통계 낼 때마다 엑셀로 수동 입력 반복</li>
+              <li><span>04</span>비서 퇴사 시 데이터 소멸, 구조화 불가</li>
+            </ul>
+          </div>
+          <div class="problem-card reveal reveal-d3">
+            <div class="pc-tag">환자의 일상 — 수술 후 정보 공백</div>
+            <div class="pc-title">
+              퇴원 후 환자는<br />정보 사각지대에 놓인다
+            </div>
+            <ul class="pc-list">
+              <li>
+                <span>01</span>퇴원 재활 안내문 40% 이상 분실 — A4 한 장이 전부
+              </li>
+              <li><span>02</span>퇴원 후 2~4주 정보 완전 단절</li>
+              <li><span>03</span>"이게 정상인지?" 불안 → 응급실 방문</li>
+              <li><span>04</span>디지털 사후관리 플랫폼 국내 0개</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- FEATURES -->
+    <section class="section canvas-section" id="features">
+      <canvas id="wave-canvas"></canvas>
+      <div class="section-inner">
+        <div class="features-intro">
+          <div>
+            <div class="reveal"><span class="label">Solution</span></div>
+            <h2 class="big-heading reveal reveal-d1">
+              추가 업무가 아닌,<br />
+              <span class="dim">기존 업무의<br />디지털 전환</span>
+            </h2>
+          </div>
+          <p class="features-sub reveal reveal-d2">
+            의사가 이미 하고 있는 행위의 부산물로<br />
+            데이터가 자동 구조화됩니다.<br />
+            Surgiflow는 워크플로우를 바꾸지 않습니다.
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feat-card reveal reveal-d1">
+            <div class="feat-num">01</div>
+            <div class="feat-title">수술 스케줄 모바일 뷰어</div>
+            <p class="feat-desc">
+              병원 EMR 없이도 스마트폰에서 언제 어디서나 확인. 30초 입력으로
+              케이스 등록 완료.
+            </p>
+          </div>
+          <div class="feat-card reveal reveal-d2">
+            <div class="feat-num">02</div>
+            <div class="feat-title">관절경 영상 키워드 검색</div>
+            <p class="feat-desc">
+              OCR/NLP 기반 술식·임플란트 키워드 즉시 검색. 수동 폴더 탐색이
+              완전히 사라집니다.
+            </p>
+          </div>
+          <div class="feat-card reveal reveal-d3">
+            <div class="feat-num">03</div>
+            <div class="feat-title">LLM 수술 기록 자동 구조화</div>
+            <p class="feat-desc">
+              음성·텍스트 입력 → 정형 변수 자동 변환. 수술 패턴 리포트와 케이스
+              포트폴리오가 자동 생성됩니다.
+            </p>
+          </div>
+          <div class="feat-card reveal reveal-d4">
+            <div class="feat-num">04</div>
+            <div class="feat-title">환자 재활 프로토콜 앱 발송</div>
+            <p class="feat-desc">
+              QR 스캔 → 앱 연결 → 2주·4주·8주 시점별 맞춤 재활 가이드 자동 제공.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- FLOW -->
+    <section class="section flow-section" id="how">
+      <div class="section-inner">
+        <div class="reveal"><span class="label">How It Works</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          30초 입력,<br /><span class="dim">이후는 자동</span>
+        </h2>
+        <div class="flow-steps">
+          <div class="flow-step reveal reveal-d1">
+            <div class="flow-step-num">01</div>
+            <div class="flow-step-title">의사 케이스 입력</div>
+            <p class="flow-step-desc">
+              수술 정보 30초 입력<br />술식·임플란트·특이사항
+            </p>
+            <div class="flow-arrow">
+              <svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8" /></svg>
+            </div>
+          </div>
+          <div class="flow-step reveal reveal-d2">
+            <div class="flow-step-num">02</div>
+            <div class="flow-step-title">QR 자동 생성</div>
+            <p class="flow-step-desc">
+              비식별 케이스번호 기반<br />고유 QR 코드 자동 발급
+            </p>
+            <div class="flow-arrow">
+              <svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8" /></svg>
+            </div>
+          </div>
+          <div class="flow-step reveal reveal-d3">
+            <div class="flow-step-num">03</div>
+            <div class="flow-step-title">퇴원 시 전달</div>
+            <p class="flow-step-desc">간호사 퇴원교육 시<br />QR 안내문 수령</p>
+            <div class="flow-arrow">
+              <svg viewBox="0 0 10 10"><polyline points="3,2 7,5 3,8" /></svg>
+            </div>
+          </div>
+          <div class="flow-step reveal reveal-d4">
+            <div class="flow-step-num">04</div>
+            <div class="flow-step-title">환자 자발적 연결</div>
+            <p class="flow-step-desc">
+              QR 스캔 → 앱 가입<br />재활 프로토콜 자동 수신
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- PRODUCTS -->
+    <section class="section" id="products">
+      <div class="section-inner">
+        <div class="reveal"><span class="label">Products</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          세 가지 제품,<br /><span class="dim">하나의 플랫폼</span>
+        </h2>
+        <div class="products-row">
+          <div class="prod-card reveal reveal-d1">
+            <div class="prod-idx">Product 01</div>
+            <svg
+              class="prod-icon"
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="white"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="12" y="4" width="16" height="28" rx="3" />
+              <line x1="16" y1="9" x2="24" y2="9" />
+              <line x1="16" y1="13" x2="24" y2="13" />
+              <line x1="16" y1="17" x2="21" y2="17" />
+              <circle cx="20" cy="27" r="2" />
+            </svg>
+            <div class="prod-title">의사용 모바일 앱</div>
+            <p class="prod-desc">
+              수술 스케줄 확인, 케이스 입력, 관절경 영상 검색, 자동 패턴
+              리포트를 스마트폰 하나로.
+            </p>
+          </div>
+          <div class="prod-card reveal reveal-d2">
+            <div class="prod-idx">Product 02</div>
+            <svg
+              class="prod-icon"
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="white"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="20" cy="10" r="4" />
+              <path d="M12 28 C12 22 28 22 28 28" />
+              <path d="M16 28 L16 36" />
+              <path d="M24 28 L24 36" />
+              <path d="M13 32 L27 32" />
+              <path d="M28 18 L32 22 M32 18 L28 22" />
+            </svg>
+            <div class="prod-title">환자용 모바일 앱</div>
+            <p class="prod-desc">
+              맞춤형 재활 프로토콜, X-ray 회복 타임라인, 날짜별 운동 가이드를
+              자동으로 제공.
+            </p>
+          </div>
+          <div class="prod-card reveal reveal-d3">
+            <div class="prod-idx">Product 03</div>
+            <svg
+              class="prod-icon"
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="white"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="4" y="6" width="32" height="22" rx="2" />
+              <line x1="14" y1="34" x2="26" y2="34" />
+              <line x1="20" y1="28" x2="20" y2="34" />
+              <circle cx="20" cy="17" r="5" />
+              <line x1="24" y1="21" x2="28" y2="25" />
+            </svg>
+            <div class="prod-title">PC 로컬 영상 아카이빙</div>
+            <p class="prod-desc">
+              관절경 영상 원본 PC 보관, DICOM 제거 후 비식별 메타 클라우드
+              동기화 및 키워드 검색.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- MARKET -->
+    <section class="section market-section" id="market">
+      <div class="section-inner">
+        <div class="reveal"><span class="label">Market</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          국내 최초,<br /><span class="dim">글로벌 확장 가능한 시장</span>
+        </h2>
+        <div class="market-numbers">
+          <div class="mnum-card reveal reveal-d1">
+            <div class="mnum-scope">TAM · Global</div>
+            <div class="mnum-val" data-target="$32.9B">$0B</div>
+            <p class="mnum-desc">
+              글로벌 수술 디지털 플랫폼 + EMR 시장 (2031년 기준)
+            </p>
+          </div>
+          <div class="mnum-card reveal reveal-d2">
+            <div class="mnum-scope">SAM · Korea</div>
+            <div class="mnum-val" data-target="2,000억">0억</div>
+            <p class="mnum-desc">국내 외과 계열 수술 데이터 관리 시장 전체</p>
+          </div>
+          <div class="mnum-card reveal reveal-d3">
+            <div class="mnum-scope">SOM · 초기 3년</div>
+            <div class="mnum-val" data-target="30억">0억</div>
+            <p class="mnum-desc">
+              2·3차 병원 정형외과 의사 500명 기준 목표 매출
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- ROADMAP -->
+    <section class="section roadmap-section" id="roadmap">
+      <div class="section-inner">
+        <div class="reveal"><span class="label">Roadmap</span></div>
+        <h2 class="big-heading reveal reveal-d1">
+          규제를 설계에 녹인<br /><span class="dim">단계별 성장 전략</span>
+        </h2>
+        <div class="phase-rows" style="margin-top: 80px">
+          <div class="phase-row reveal reveal-d1">
+            <div class="phase-tag-col">
+              <span class="phase-tag ph0">Phase 0–1</span>
+            </div>
+            <div class="phase-body">
+              <div class="phase-title">비의료기기 MVP</div>
+              <p class="phase-desc">
+                수술 스케줄, 영상 아카이빙, 키워드 검색, 범용 재활 — 인허가
+                불필요, 리스크 제로 출시
+              </p>
+            </div>
+            <div class="phase-date">'26.12</div>
+          </div>
+          <div class="phase-row reveal reveal-d2">
+            <div class="phase-tag-col">
+              <span class="phase-tag ph1">Phase 1</span>
+            </div>
+            <div class="phase-body">
+              <div class="phase-title">경량 자동화</div>
+              <p class="phase-desc">
+                LLM 수술 기록 구조화, 수술 패턴 리포트, 예후 분석 — 비의료기기
+                상태 유지
+              </p>
+            </div>
+            <div class="phase-date">'27</div>
+          </div>
+          <div class="phase-row reveal reveal-d3">
+            <div class="phase-tag-col">
+              <span class="phase-tag ph2">Phase 2</span>
+            </div>
+            <div class="phase-body">
+              <div class="phase-title">예측 도입 (SaMD 경계)</div>
+              <p class="phase-desc">
+                수술시간 예측, OR 스케줄 최적화 — IRB 승인, 혁신의료기기 신청
+              </p>
+            </div>
+            <div class="phase-date">'28</div>
+          </div>
+          <div class="phase-row reveal reveal-d4">
+            <div class="phase-tag-col">
+              <span class="phase-tag ph3">Phase 3–4</span>
+            </div>
+            <div class="phase-body">
+              <div class="phase-title">플랫폼화 + 차세대 EMR</div>
+              <p class="phase-desc">
+                환자 회복 예측, EMR 연동, 타 외과 계열 확장, 일본·동남아·미국
+                글로벌 진출
+              </p>
+            </div>
+            <div class="phase-date">'29~</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-line"></div>
+
+    <!-- FOOTER -->
+    <footer>
+      <span class="foot-logo">Surgiflow</span>
+      <span class="foot-copy">© 2026 Team Framing. All rights reserved.</span>
+      <img
+        src="assets/FRAMING LEFTSIDE.png"
+        alt="TEAM FRAMING"
+        style="height: 90px; width: auto; opacity: 0.45"
+      />
+    </footer>
+
+    <script>
+      const UI_STATE = new Proxy(
+        {},
+        {
+          get: (target, key) => target[key] || {},
+          set: (target, key, value) => {
+            target[key] = { ...target[key], ...value };
+            return true;
+          },
+        },
+      );
+
+      // 1. MODULES (Engines)
+      const UI_MODULES = {
+        particles: (cfg) => {
+          const canvas = document.querySelector(cfg.selector);
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          let W,
+            H,
+            particles = [];
+
+          const resize = () => {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+          };
+          resize();
+          window.addEventListener("resize", resize);
+
+          class Particle {
+            constructor() {
+              this.reset();
+            }
+            reset() {
+              this.x = Math.random() * W;
+              this.y = Math.random() * H;
+              this.size = Math.random() * 1.2 + 0.3;
+              this.speedX = (Math.random() - 0.5) * 0.3;
+              this.speedY = (Math.random() - 0.5) * 0.3;
+              this.opacity = Math.random() * 0.4 + 0.05;
+              this.life = Math.random() * 200 + 100;
+              this.maxLife = this.life;
+            }
+            update() {
+              this.x += this.speedX;
+              this.y += this.speedY;
+              this.life--;
+              if (
+                this.life <= 0 ||
+                this.x < -10 ||
+                this.x > W + 10 ||
+                this.y < -10 ||
+                this.y > H + 10
+              )
+                this.reset();
+            }
+            draw() {
+              const alpha = this.opacity * (this.life / this.maxLife);
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+              ctx.fill();
+            }
+          }
+
+          for (let i = 0; i < (cfg.count || 120); i++)
+            particles.push(new Particle());
+
+          const animate = () => {
+            ctx.clearRect(0, 0, W, H);
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.strokeStyle = `rgba(255,255,255,${0.04 * (1 - dist / 120)})`;
+                  ctx.lineWidth = 0.5;
+                  ctx.stroke();
+                }
+              }
+            }
+            particles.forEach((p) => {
+              p.update();
+              p.draw();
+            });
+            requestAnimationFrame(animate);
+          };
+          animate();
+        },
+
+        waves: (cfg) => {
+          const canvas = document.querySelector(cfg.selector);
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+          let t = 0;
+
+          const resize = () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+          };
+          resize();
+          window.addEventListener("resize", resize);
+
+          const draw = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const { width: W, height: H } = canvas;
+            const cols = cfg.cols || 60,
+              rows = cfg.rows || 20;
+            const cw = W / cols,
+              ch = H / rows;
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const x = c * cw + cw / 2,
+                  y = r * ch + ch / 2;
+                const wave = Math.sin(c * 0.3 + r * 0.5 + t) * 0.5 + 0.5;
+                ctx.beginPath();
+                ctx.arc(x, y, wave * 1.5 + 0.2, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${wave * 0.25 + 0.02})`;
+                ctx.fill();
+              }
+            }
+            t += cfg.speed || 0.018;
+            requestAnimationFrame(draw);
+          };
+          draw();
+        },
+
+        typing: (cfg) => {
+          const el = document.querySelector(cfg.selector);
+          if (!el) return;
+
+          const chars = [];
+          cfg.data.chunks.forEach((c) => {
+            if (c.br) chars.push({ br: true });
+            else [...c.text].forEach((ch) => chars.push({ ch, em: c.em }));
+          });
+
+          let typed = [];
+          const render = () => {
+            let html = "",
+              inEm = false;
+            typed.forEach((c) => {
+              if (c.br) {
+                if (inEm) {
+                  html += "</em>";
+                  inEm = false;
+                }
+                html += "<br/>";
+              } else if (c.em && !inEm) {
+                html += "<em>" + c.ch;
+                inEm = true;
+              } else if (!c.em && inEm) {
+                html += "</em>" + c.ch;
+                inEm = false;
+              } else html += c.ch;
+            });
+            if (inEm) html += "</em>";
+            el.innerHTML = html;
+          };
+
+          const loop = (isDeleting) => {
+            if (!isDeleting && typed.length < chars.length) {
+              typed.push(chars[typed.length]);
+              render();
+              setTimeout(
+                () => loop(false),
+                typed[typed.length - 1].br
+                  ? cfg.data.typeSpeed * 1.5
+                  : cfg.data.typeSpeed,
+              );
+            } else if (!isDeleting) {
+              setTimeout(() => loop(true), cfg.data.pauseAfter);
+            } else if (isDeleting && typed.length > 0) {
+              typed.pop();
+              render();
+              setTimeout(() => loop(true), cfg.data.deleteSpeed);
+            } else {
+              setTimeout(() => loop(false), cfg.data.pauseBefore);
+            }
+          };
+          setTimeout(() => loop(false), 500);
+        },
+
+        spotlight: (cfg) => {
+          document.querySelectorAll(cfg.selector).forEach((card) => {
+            card.addEventListener("mousemove", (e) => {
+              const rect = card.getBoundingClientRect();
+              card.style.background = `radial-gradient(${cfg.radius || "320px"} circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, ${cfg.color || "rgba(79,142,247,0.08)"} 0%, #000 70%)`;
+            });
+            card.addEventListener(
+              "mouseleave",
+              () => (card.style.background = ""),
+            );
+          });
+        },
+
+        reveal: (cfg) => {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting)
+                e.target.classList.add(cfg.activeClass || "visible");
+            });
+          }, cfg.options);
+          document
+            .querySelectorAll(cfg.selector)
+            .forEach((el) => observer.observe(el));
+        },
+
+        roulette: (cfg) => {
+          const els = document.querySelectorAll(cfg.selector);
+          const parse = (raw) => {
+            const m = raw.match(/^(\$?)([\d,]+(?:\.\d+)?)(.*)$/);
+            return m
+              ? {
+                  prefix: m[1],
+                  num: parseFloat(m[2].replace(/,/g, "")),
+                  suffix: m[3],
+                  hasComma: m[2].includes(","),
+                  hasDecimal: m[2].includes("."),
+                }
+              : null;
+          };
+
+          const fmt = (n, info) => {
+            if (info.hasComma) return Math.round(n).toLocaleString("en-US");
+            if (info.hasDecimal) return n.toFixed(1);
+            return Math.round(n).toString();
+          };
+
+          const animate = (el, key) => {
+            if (UI_STATE[key].running || UI_STATE[key].done) return;
+            UI_STATE[key] = { running: true };
+
+            const info = parse(el.dataset.target);
+            if (!info) {
+              el.textContent = el.dataset.target;
+              UI_STATE[key] = { done: true };
+              return;
+            }
+
+            const start = performance.now();
+            const tick = (now) => {
+              const elapsed = now - start;
+              if (elapsed >= cfg.duration) {
+                el.textContent = el.dataset.target;
+                UI_STATE[key] = { running: false, done: true };
+                return;
+              }
+              const ease = 1 - Math.pow(1 - elapsed / cfg.duration, 3);
+              el.textContent =
+                info.prefix +
+                fmt(Math.min(info.num * ease, info.num), info) +
+                info.suffix;
+              requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          };
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+              const key = `roulette-${e.target.dataset.target}-${Array.from(els).indexOf(e.target)}`;
+              if (e.isIntersecting) animate(e.target, key);
+            });
+          }, cfg.options);
+          els.forEach((el) => observer.observe(el));
+        },
+      };
+
+      // 2. DATA REGISTRY
+      const UI_REGISTRY = [
+        { type: "particles", selector: "#particle-canvas", count: 120 },
+        {
+          type: "waves",
+          selector: "#wave-canvas",
+          speed: 0.018,
+          cols: 60,
+          rows: 20,
+        },
+        {
+          type: "typing",
+          selector: "#heroTitle",
+          data: {
+            chunks: [
+              { text: "Surgery", em: false },
+              { br: true },
+              { text: "Data", em: true },
+              { br: true },
+              { text: "Flows.", em: false },
+            ],
+            typeSpeed: 130,
+            deleteSpeed: 55,
+            pauseAfter: 3200,
+            pauseBefore: 500,
+          },
+        },
+        {
+          type: "spotlight",
+          selector:
+            ".feat-card, .flow-step, .problem-card, .prod-card, .mnum-card, .phase-row",
+          radius: "320px",
+          color: "rgba(79,142,247,0.08)",
+        },
+        { type: "reveal", selector: ".reveal", options: { threshold: 0.12 } },
+        {
+          type: "roulette",
+          selector: "[data-target]",
+          duration: 2200,
+          options: { threshold: 0.5 },
+        },
+      ];
+
+      // 3. RUNNER
+      UI_REGISTRY.forEach((item) => {
+        const init = UI_MODULES[item.type];
+        if (init) init(item);
+      });
+    </script>
+  </body>
 </html>

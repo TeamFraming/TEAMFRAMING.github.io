@@ -16,6 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@200;300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="assets/styles/index.css" />
     <style>
       body {
         font-family: "Inter", sans-serif;
@@ -475,196 +476,152 @@
     <script>
       // 타이핑 효과: AI HEALTHCARE -> TEAMFRAMING -> SURGIFLOW 순환
       function typeText() {
-        const texts = ["AI HEALTHCARE", "TEAMFRAMING", "SURGIFLOW"];
-        const typingElement = document.getElementById("typing-text");
+        const CONFIG = {
+          texts: ["AI HEALTHCARE", "TEAMFRAMING", "SURGIFLOW"],
+          el: document.getElementById("typing-text"),
+          modes: {
+            normal: { type: 100, del: 60, waitType: 2500, waitDel: 500 },
+            attack: { type: 60, del: 30, waitType: 600, waitDel: 120 },
+          },
+        };
 
         const params = new URLSearchParams(window.location.search);
-        const timeAttack =
+        const isAttack =
           params.get("timeattack") === "1" ||
           params.get("timeattack") === "true";
+        const timing = CONFIG.modes[isAttack ? "attack" : "normal"];
 
-        let textIndex = 0;
-        let charIndex = 0;
-        let deleting = false;
-
-        // 기본(정상 모드) vs 타임어택 모드별 속도/대기 조절
-        const typeSpeed = timeAttack ? 60 : 100; // 타이핑 속도(ms)
-        const deleteSpeed = timeAttack ? 30 : 60; // 삭제 속도(ms)
-        const pauseAfterType = timeAttack ? 600 : 2500; // 한 단어 다 쓴 뒤 대기(ms)
-        const pauseAfterDelete = timeAttack ? 120 : 500; // 모두 지운 뒤 다음 단어까지 대기(ms)
+        let state = { textIdx: 0, charIdx: 0, isDeleting: false };
 
         function tick() {
-          const fullText = texts[textIndex];
+          const fullText = CONFIG.texts[state.textIdx];
+          const { charIdx, isDeleting } = state;
 
-          if (!deleting) {
-            // 타이핑
-            charIndex++;
-            typingElement.textContent = fullText.substring(0, charIndex);
-
-            if (charIndex >= fullText.length) {
-              deleting = true;
-              setTimeout(tick, pauseAfterType);
-            } else {
-              setTimeout(tick, typeSpeed);
-            }
-            return;
+          // 1. 상태 전환
+          if (!isDeleting && charIdx === fullText.length) {
+            state.isDeleting = true;
+            return setTimeout(tick, timing.waitType);
           }
 
-          // 삭제
-          charIndex = Math.max(0, charIndex - 1);
-          typingElement.textContent = fullText.substring(0, charIndex);
-
-          if (charIndex === 0) {
-            deleting = false;
-            textIndex = (textIndex + 1) % texts.length;
-            setTimeout(tick, pauseAfterDelete);
-          } else {
-            setTimeout(tick, deleteSpeed);
+          if (isDeleting && charIdx === 0) {
+            state.isDeleting = false;
+            state.textIdx = (state.textIdx + 1) % CONFIG.texts.length;
+            return setTimeout(tick, timing.waitDel);
           }
+
+          // 2. 타이핑 및 UI 업데이트
+          state.charIdx += isDeleting ? -1 : 1;
+          CONFIG.el.textContent = fullText.substring(0, state.charIdx);
+
+          setTimeout(tick, isDeleting ? timing.del : timing.type);
         }
 
         tick();
       }
 
-      // 카운트다운 타이머
-      // 기본: "지금 기준으로 약 1달 뒤"에 LAUNCHED 표시
-      // 타임어택: URL에 ?timeattack=1 를 붙이면 몇 초 뒤에 바로 LAUNCHED로 전환
+      /**
+       * 카운트 다운 타이머
+       */
       function updateCountdown() {
+        const KEYS = {
+          MODE: "tf_mode",
+          LAUNCH: "tf_launch",
+          ATTACK: "tf_attack_sec",
+        };
+
         const params = new URLSearchParams(window.location.search);
-        const timeAttack =
+        const isAttack =
           params.get("timeattack") === "1" ||
           params.get("timeattack") === "true";
-        const attackSeconds = Number(params.get("timeattack_seconds") || 30); // 기본 30초
+        const attackSec = Number(params.get("timeattack_seconds") || 30);
 
-        // 새로고침해도 리셋되지 않게:
-        // "목표 시각(launchAt)"을 localStorage에 고정해두고 이후 로드에서는 그 값을 사용합니다.
-        const modeKey = "teamframing_countdown_mode";
-        const launchAtKey = "teamframing_launchAt_ms";
-        const timeAttackSecondsKey = "teamframing_timeattack_seconds";
-
-        let countDownDateMs;
-        try {
-          const nowMs = Date.now();
-          const storedMode = window.localStorage.getItem(modeKey);
-          const storedLaunchAt = window.localStorage.getItem(launchAtKey);
-          const storedLaunchAtMs = storedLaunchAt
-            ? Number(storedLaunchAt)
-            : NaN;
-          const storedAttackSeconds = Number(
-            window.localStorage.getItem(timeAttackSecondsKey),
-          );
-
-          if (timeAttack) {
-            // timeattack 모드: 같은 seconds로 들어오는 동안은 목표 시간을 유지
-            if (
-              storedMode === "timeattack" &&
-              Number.isFinite(storedLaunchAtMs) &&
-              Number.isFinite(storedAttackSeconds) &&
-              storedAttackSeconds === attackSeconds
-            ) {
-              countDownDateMs = storedLaunchAtMs;
-            } else {
-              countDownDateMs = nowMs + attackSeconds * 1000;
-              window.localStorage.setItem(modeKey, "timeattack");
-              window.localStorage.setItem(launchAtKey, String(countDownDateMs));
-              window.localStorage.setItem(
-                timeAttackSecondsKey,
-                String(attackSeconds),
-              );
-            }
-          } else {
-            // 기본 모드: 40일 목표 시각을 처음 1회만 고정
-            if (
-              storedMode === "default40d" &&
-              Number.isFinite(storedLaunchAtMs)
-            ) {
-              countDownDateMs = storedLaunchAtMs;
-            } else {
-              countDownDateMs = nowMs + 40 * 24 * 60 * 60 * 1000;
-              window.localStorage.setItem(modeKey, "default40d");
-              window.localStorage.setItem(launchAtKey, String(countDownDateMs));
-              window.localStorage.removeItem(timeAttackSecondsKey);
-            }
-          }
-        } catch (e) {
-          // localStorage 사용 불가 시(프라이빗/차단): 새로고침마다 리셋될 수 있음
-          countDownDateMs = timeAttack
-            ? Date.now() + attackSeconds * 1000
-            : Date.now() + 40 * 24 * 60 * 60 * 1000;
-        }
-
-        const countDownDate = new Date(countDownDateMs);
-
-        const x = setInterval(function () {
+        const getLaunchTime = () => {
           const now = Date.now();
-          const distance = countDownDate.getTime() - now;
+          try {
+            const sMode = localStorage.getItem(KEYS.MODE);
+            const sLaunch = Number(localStorage.getItem(KEYS.LAUNCH));
+            const sSec = Number(localStorage.getItem(KEYS.ATTACK));
 
-          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-          );
-          const minutes = Math.floor(
-            (distance % (1000 * 60 * 60)) / (1000 * 60),
-          );
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const match = isAttack
+              ? sMode === "attack" && sSec === attackSec
+              : sMode === "default";
 
-          // 음수가 되지 않도록 처리
-          document.getElementById("days").textContent = Math.max(0, days)
-            .toString()
-            .padStart(2, "0");
-          document.getElementById("hours").textContent = Math.max(0, hours)
-            .toString()
-            .padStart(2, "0");
-          document.getElementById("minutes").textContent = Math.max(0, minutes)
-            .toString()
-            .padStart(2, "0");
-          document.getElementById("seconds").textContent = Math.max(0, seconds)
-            .toString()
-            .padStart(2, "0");
+            if (match && !isNaN(sLaunch)) return sLaunch;
 
+            const newLaunch =
+              now + (isAttack ? attackSec : 40 * 24 * 3600) * 1000;
+            localStorage.setItem(KEYS.MODE, isAttack ? "attack" : "default");
+            localStorage.setItem(KEYS.LAUNCH, newLaunch);
+            if (isAttack) localStorage.setItem(KEYS.ATTACK, attackSec);
+            else localStorage.removeItem(KEYS.ATTACK);
+            return newLaunch;
+          } catch {
+            return now + (isAttack ? attackSec : 40 * 24 * 3600) * 1000;
+          }
+        };
+
+        const launchMs = getLaunchTime();
+        const units = [
+          { id: "days", ms: 86400000 },
+          { id: "hours", ms: 3600000 },
+          { id: "minutes", ms: 60000 },
+          { id: "seconds", ms: 1000 },
+        ];
+
+        const timer = setInterval(() => {
+          const distance = launchMs - Date.now();
           if (distance < 0) {
-            clearInterval(x);
+            clearInterval(timer);
             document.querySelector(".countdown").innerHTML =
               "<h2>LAUNCHED!</h2>";
+            return;
           }
+
+          let rem = distance;
+          units.forEach((u) => {
+            const val = Math.floor(rem / u.ms);
+            rem %= u.ms;
+            document.getElementById(u.id).textContent = String(
+              Math.max(0, val),
+            ).padStart(2, "0");
+          });
         }, 1000);
       }
 
-      // 깃허브 드롭다운 초기화
-      function initGithubDropdown() {
-        const githubToggle = document.getElementById("githubToggle");
-        const githubDropdown = document.getElementById("githubDropdown");
-
-        githubToggle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          githubDropdown.classList.toggle("show");
-        });
-      }
-
-      // 외부 클릭 시 드롭다운 닫기
-      function initOutsideClick() {
-        document.addEventListener("click", function () {
-          document.getElementById("githubDropdown").classList.remove("show");
-        });
-      }
-
-      // 로고 클릭: localStorage 유지한 채 새로고침 (카운트다운 리셋 없음)
-      function initLogoBtn() {
-        document
-          .getElementById("teamLogoBtn")
-          .addEventListener("click", function (e) {
+      /**
+       * UI 이벤트 리스너 초기화
+       */
+      function initEvents() {
+        const dropdown = document.getElementById("githubDropdown");
+        const actions = {
+          toggle: (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle("show");
+          },
+          close: () => dropdown.classList.remove("show"),
+          reload: (e) => {
             e.stopPropagation();
             location.reload();
-          });
+          },
+        };
+
+        const bindings = [
+          { id: "githubToggle", type: "click", act: actions.toggle },
+          { id: "teamLogoBtn", type: "click", act: actions.reload },
+          { target: document, type: "click", act: actions.close },
+        ];
+
+        bindings.forEach((b) => {
+          const el = b.target || document.getElementById(b.id);
+          if (el) el.addEventListener(b.type, b.act);
+        });
       }
 
       // 페이지 로드 시 모든 기능 초기화
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", () => {
         typeText();
         updateCountdown();
-        initGithubDropdown();
-        initOutsideClick();
-        initLogoBtn();
+        initEvents();
       });
     </script>
   </body>
