@@ -182,36 +182,36 @@
               <p class="flow-step__description">
                 수술 정보 30초 입력<br />술식·임플란트·특이사항
               </p>
-              <div class="flow-step__arrow">
-                <svg viewBox="0 0 10 10" aria-hidden="true">
-                  <polyline points="3,2 7,5 3,8" />
-                </svg>
-              </div>
             </article>
+            <div class="flow-step__arrow">
+              <svg viewBox="0 0 10 10" aria-hidden="true">
+                <polyline points="3,2 7,5 3,8" />
+              </svg>
+            </div>
             <article class="flow-step reveal reveal-d2">
               <div class="flow-step__number">02</div>
               <h3 class="flow-step__title">QR 자동 생성</h3>
               <p class="flow-step__description">
                 비식별 케이스번호 기반<br />고유 QR 코드 자동 발급
               </p>
-              <div class="flow-step__arrow">
-                <svg viewBox="0 0 10 10" aria-hidden="true">
-                  <polyline points="3,2 7,5 3,8" />
-                </svg>
-              </div>
             </article>
+            <div class="flow-step__arrow">
+              <svg viewBox="0 0 10 10" aria-hidden="true">
+                <polyline points="3,2 7,5 3,8" />
+              </svg>
+            </div>
             <article class="flow-step reveal reveal-d3">
               <div class="flow-step__number">03</div>
               <h3 class="flow-step__title">퇴원 시 전달</h3>
               <p class="flow-step__description">
                 간호사 퇴원교육 시<br />QR 안내문 수령
               </p>
-              <div class="flow-step__arrow">
-                <svg viewBox="0 0 10 10" aria-hidden="true">
-                  <polyline points="3,2 7,5 3,8" />
-                </svg>
-              </div>
             </article>
+            <div class="flow-step__arrow">
+              <svg viewBox="0 0 10 10" aria-hidden="true">
+                <polyline points="3,2 7,5 3,8" />
+              </svg>
+            </div>
             <article class="flow-step reveal reveal-d4">
               <div class="flow-step__number">04</div>
               <h3 class="flow-step__title">환자 자발적 연결</h3>
@@ -437,7 +437,10 @@
       {
         get: (target, key) => target[key] || {},
         set: (target, key, value) => {
-          target[key] = { ...target[key], ...value };
+          target[key] =
+            value?.constructor === Object
+              ? { ...target[key], ...value }
+              : value;
           return true;
         },
       },
@@ -447,7 +450,8 @@
     const uiModules = {
       particles: (cfg) => {
         const canvas = document.querySelector(cfg.selector);
-        if (!canvas) return;
+        if (!canvas || canvas.dataset.init) return;
+        canvas.dataset.init = "true";
         const ctx = canvas.getContext("2d");
         let W,
           H,
@@ -528,7 +532,8 @@
 
       waves: (cfg) => {
         const canvas = document.querySelector(cfg.selector);
-        if (!canvas) return;
+        if (!canvas || canvas.dataset.init) return;
+        canvas.dataset.init = "true";
         const ctx = canvas.getContext("2d");
         let t = 0;
 
@@ -577,22 +582,23 @@
         const render = () => {
           let html = "",
             inEm = false;
+          const toggle = (state) => {
+            if (inEm !== state) {
+              html += state ? "<em>" : "</em>";
+              inEm = state;
+            }
+          };
+
           typed.forEach((c) => {
             if (c.br) {
-              if (inEm) {
-                html += "</em>";
-                inEm = false;
-              }
+              toggle(false);
               html += "<br/>";
-            } else if (c.em && !inEm) {
-              html += "<em>" + c.ch;
-              inEm = true;
-            } else if (!c.em && inEm) {
-              html += "</em>" + c.ch;
-              inEm = false;
-            } else html += c.ch;
+            } else {
+              toggle(!!c.em);
+              html += c.ch;
+            }
           });
-          if (inEm) html += "</em>";
+          toggle(false);
           el.innerHTML = html;
         };
 
@@ -621,6 +627,8 @@
 
       spotlight: (cfg) => {
         document.querySelectorAll(cfg.selector).forEach((card) => {
+          if (card.dataset.init) return;
+          card.dataset.init = "true";
           card.addEventListener("mousemove", (e) => {
             const rect = card.getBoundingClientRect();
             card.style.background = `radial-gradient(${cfg.radius || "320px"} circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, ${cfg.color || "rgba(79,142,247,0.04)"} 0%, #ffffff 50%)`;
@@ -646,6 +654,8 @@
 
       counter: (cfg) => {
         const els = document.querySelectorAll(cfg.selector);
+        const states = new WeakMap();
+
         const parseValue = (raw) => {
           const m = raw.match(/^(\$?)([\d,]+(?:\.\d+)?)(.*)$/);
           return m
@@ -665,14 +675,15 @@
           return Math.round(n).toString();
         };
 
-        const animate = (el, key) => {
-          if (appState[key].running || appState[key].done) return;
-          appState[key] = { running: true };
+        const animate = (el) => {
+          const state = states.get(el) || {};
+          if (state.running || state.done) return;
+          states.set(el, { running: true });
 
           const info = parseValue(el.dataset.target);
           if (!info) {
             el.textContent = el.dataset.target;
-            appState[key] = { done: true };
+            states.set(el, { done: true });
             return;
           }
 
@@ -681,7 +692,7 @@
             const elapsed = now - start;
             if (elapsed >= cfg.duration) {
               el.textContent = el.dataset.target;
-              appState[key] = { running: false, done: true };
+              states.set(el, { running: false, done: true });
               return;
             }
             const ease = 1 - Math.pow(1 - elapsed / cfg.duration, 3);
@@ -696,8 +707,7 @@
 
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((e) => {
-            const key = `counter-${e.target.dataset.target}-${Array.from(els).indexOf(e.target)}`;
-            if (e.isIntersecting) animate(e.target, key);
+            if (e.isIntersecting) animate(e.target);
           });
         }, cfg.options);
         els.forEach((el) => observer.observe(el));

@@ -383,6 +383,7 @@ body {
   display: flex;
   gap: 0;
   margin-top: 80px;
+  align-items: center;
 }
 
 .flow-step {
@@ -412,16 +413,9 @@ body {
 }
 
 .flow-step__arrow {
-  position: absolute;
-  right: -14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
 }
 
 /* Products Section */
