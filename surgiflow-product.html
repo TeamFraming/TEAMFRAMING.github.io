@@ -239,7 +239,7 @@
                 class="product-card__icon"
                 viewBox="0 0 40 40"
                 fill="none"
-                stroke="white"
+                stroke="black"
                 stroke-width="1.2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -263,7 +263,7 @@
                 class="product-card__icon"
                 viewBox="0 0 40 40"
                 fill="none"
-                stroke="white"
+                stroke="black"
                 stroke-width="1.2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -288,7 +288,7 @@
                 class="product-card__icon"
                 viewBox="0 0 40 40"
                 fill="none"
-                stroke="white"
+                stroke="black"
                 stroke-width="1.2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -623,7 +623,7 @@
         document.querySelectorAll(cfg.selector).forEach((card) => {
           card.addEventListener("mousemove", (e) => {
             const rect = card.getBoundingClientRect();
-            card.style.background = `radial-gradient(${cfg.radius || "320px"} circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, ${cfg.color || "rgba(79,142,247,0.08)"} 0%, #ffffff 70%)`;
+            card.style.background = `radial-gradient(${cfg.radius || "320px"} circle at ${e.clientX - rect.left}px ${e.clientY - rect.top}px, ${cfg.color || "rgba(79,142,247,0.04)"} 0%, #ffffff 50%)`;
           });
           card.addEventListener(
             "mouseleave",
@@ -736,7 +736,7 @@
         selector:
           ".feature-card, .flow-step, .problem-card, .product-card, .market-stat-card, .phase-row",
         radius: "320px",
-        color: "rgba(79,142,247,0.08)",
+        color: "rgba(79,142,247,0.04)",
       },
       { type: "reveal", selector: ".reveal", options: { threshold: 0.12 } },
       {
