@@ -1,1 +1,58 @@
-@import url("reset.css");
+/* ─── COMMON GLOBAL STYLES ─── */
+
+/* 1. Reset & Base */
+@import url("./reset.css");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+body {
+  font-family: "Pretendard", sans-serif;
+}
+
+/* 2. Scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 10px;
+}
+
+/* 3. Common Layout Utilities */
+.container,
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+/* 4. Shared Animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Common Blink Animation */
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 0.5;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
