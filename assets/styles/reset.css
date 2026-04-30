@@ -64,3 +64,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+ol {
+  padding: 0;
+}

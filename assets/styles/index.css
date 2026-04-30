@@ -4,8 +4,45 @@
 @import url("./reset.css");
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "Pretendard", sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  /* Brand Colors */
+  --brand-primary: #2c5078;
+  --brand-primary-bright: #4a7bb1;
+
+  /* Light Theme */
+  --bg-color: #ffffff;
+  --text-color: #0e0e0e;
+  --text-sub: #606060;
+  --border-color: #e0e0e0;
+  --primary-color: var(--brand-primary);
+  --glass: rgba(255, 255, 255, 0.3);
+
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Theme */
+    --bg-color: #0e0e0e;
+    --text-color: #ffffff;
+    --text-sub: #bababa;
+    --border-color: #202020;
+    --glass: rgba(15, 15, 15, 0.3);
+    --primary-color: var(--brand-primary-bright);
+  }
 }
 
 /* 2. Scrollbar */

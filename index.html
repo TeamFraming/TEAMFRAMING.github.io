@@ -3,719 +3,432 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TEAM FRAMING</title>
-    <link rel="icon" type="image/png" href="./assets/favicon.png" />
-    <link rel="apple-touch-icon" href="./assets/favicon.png" />
 
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
+    <!-- SEO: Title & Meta Tags -->
+    <title>Surgiflow | AI 기반 수술 데이터 관리 플랫폼</title>
+    <meta
+      name="description"
+      content="서지플로우(Surgiflow)는 의사의 추가 업무 없이 수술 데이터를 자동으로 구조화하는 LLM 기반 수술 관리 및 환자 재활 플랫폼입니다."
     />
-    <link rel="stylesheet" href="./assets/styles/index.css" />
-    <style>
-      :root {
-        /* Colors */
-        --bg-main: #0a0a0a;
-        --bg-accent: #161616;
-        --text-primary: #ffffff;
-        --text-secondary: rgba(255, 255, 255, 0.45);
-        --text-muted: rgba(255, 255, 255, 0.15);
-        --border-glass: rgba(255, 255, 255, 0.12);
-        --bg-glass: rgba(255, 255, 255, 0.03);
-        --accent-glow: rgba(255, 255, 255, 0.08);
+    <meta
+      name="keywords"
+      content="서지플로우, Surgiflow, AI 수술 데이터, LLM 수술기록, 정형외과 플랫폼, 수술 데이터 구조화, 환자 재활 앱, 수술 영상 아카이빙"
+    />
+    <meta name="author" content="Team Framing" />
 
-        /* Fonts */
-        --font-display: "Outfit", sans-serif;
+    <!-- SEO: Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Surgiflow | AI 기반 수술 데이터 관리 플랫폼"
+    />
+    <meta
+      property="og:description"
+      content="추가 업무 없이 디지털 전환되는 LLM 기반 수술 데이터 관리 플랫폼."
+    />
+    <meta property="og:image" content="./assets/ogc.png" />
+    <meta property="og:url" content="https://framing.co.kr/" />
+    <meta property="og:site_name" content="Surgiflow" />
 
-        /* Transitions */
-        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+    <!-- SEO: Canonical Link -->
+    <link rel="canonical" href="https://framing.co.kr/" />
 
-      body {
-        background: radial-gradient(
-          circle at center,
-          var(--bg-accent) 0%,
-          var(--bg-main) 100%
-        );
-        color: var(--text-primary);
-        min-height: 100vh;
-        position: relative;
-        overflow-x: hidden;
-      }
-
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url("./assets/svg/base_noise.svg");
-        opacity: 0.1;
-        pointer-events: none;
-        z-index: 1;
-      }
-
-      /* Ensure content is above grain */
-      .site-header,
-      main,
-      .dropdown-menu {
-        position: relative;
-        z-index: 2;
-      }
-
-      /* Hero Section */
-      .hero {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        padding-top: 10vh;
-        text-align: center;
-      }
-
-      .hero__content {
-        max-width: 800px;
-        width: 100%;
-        justify-self: center;
-      }
-
-      .hero__title {
-        font-size: 5.5rem;
-        font-weight: 800;
-        text-align: center;
-        margin-bottom: 0.6rem;
-        line-height: 1.1;
-        min-height: 7rem;
-        white-space: nowrap;
-        letter-spacing: -0.02em;
-      }
-
-      .hero__cursor {
-        animation: blink 1s infinite;
-        font-weight: 300;
-        opacity: 0.5;
-      }
-
-      .hero__status {
-        font-size: 1rem;
-        font-weight: 500;
-        color: var(--text-secondary);
-        text-align: center;
-        margin-bottom: 2rem;
-        letter-spacing: 0.45em;
-        text-transform: uppercase;
-      }
-
-      /* Header & Navigation */
-      .site-header {
-        position: fixed;
-        top: 2rem;
-        left: 2rem;
-        right: 2rem;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        pointer-events: none;
-      }
-
-      .site-header > * {
-        pointer-events: auto;
-      }
-
-      /* Logo Area */
-      .site-header__logo {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-      }
-
-      .logo-button {
-        padding: 0;
-        border: 0;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        background: none;
-        transition: var(--transition-smooth);
-      }
-
-      .logo-button img {
-        height: 48px;
-        width: auto;
-        max-width: none;
-        object-fit: contain;
-        flex-shrink: 0;
-        filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
-      }
-
-      .logo-button:hover {
-        transform: translateY(-2px) scale(1.05);
-        opacity: 0.85;
-      }
-
-      /* Top Nav Controls */
-      .site-nav {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 1rem;
-      }
-
-      .site-nav__group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      .site-nav__button {
-        width: 50px;
-        height: 50px;
-        background: var(--bg-glass);
-        border: 1px solid var(--border-glass);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        transition: var(--transition-smooth);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 0;
-        cursor: pointer;
-      }
-
-      .site-nav__button:hover {
-        background: var(--accent-glow);
-        transform: translateY(-2px) scale(1.05);
-        border-color: var(--text-primary);
-      }
-
-      .site-nav__button svg {
-        width: 24px;
-        height: 24px;
-        fill: var(--text-primary);
-      }
-
-      /* Dropdown Menu */
-      .dropdown-menu {
-        width: 250px;
-        background: rgba(10, 10, 10, 0.85);
-        border-radius: 16px;
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid var(--border-glass);
-        transform: translateY(-12px);
-        opacity: 0;
-        pointer-events: none;
-        transition: var(--transition-smooth);
-        z-index: 999;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      }
-
-      .dropdown-menu.show {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: all;
-      }
-
-      .dropdown-menu__item {
-        display: flex;
-        align-items: center;
-        padding: 1.25rem;
-        text-decoration: none;
-        color: var(--text-primary);
-        border-bottom: 1px solid var(--border-glass);
-        transition: background 0.2s ease;
-      }
-
-      .dropdown-menu__item:hover {
-        background: var(--bg-glass);
-      }
-
-      .dropdown-menu__item:last-child {
-        border-bottom: none;
-      }
-
-      .dropdown-menu__item svg {
-        width: 20px;
-        height: 20px;
-        fill: var(--text-primary);
-        margin-right: 1rem;
-      }
-
-      .dropdown-menu__info {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .dropdown-menu__name {
-        font-weight: 600;
-        margin-bottom: 0.2rem;
-        font-size: 0.95rem;
-      }
-
-      .dropdown-menu__role {
-        font-size: 0.75rem;
-        color: #888888;
-      }
-
-      /* Countdown */
-      .countdown-wrapper {
-        text-align: center;
-        margin-bottom: 6rem;
-      }
-
-      .countdown {
-        display: inline-flex;
-        align-items: flex-start;
-      }
-
-      .countdown__item {
-        text-align: center;
-        min-width: 110px;
-      }
-
-      .countdown__separator {
-        font-family: var(--font-display);
-        font-size: 2.5rem;
-        font-weight: 200;
-        color: var(--text-muted);
-        line-height: 1;
-        padding: 0 0.2rem;
-        margin-top: 0.1rem;
-        user-select: none;
-      }
-
-      .countdown__value {
-        font-family: var(--font-display);
-        font-size: 3.5rem;
-        font-weight: 300;
-        display: block;
-        line-height: 1;
-        margin-bottom: 0.5rem;
-        letter-spacing: 0.04em;
-        color: var(--text-primary);
-      }
-
-      .countdown__label {
-        font-family: var(--font-display);
-        font-size: 0.6rem;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.35em;
-        font-weight: 400;
-        display: block;
-      }
-
-      .launch-button {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        transition: 0.3s;
-        height: fit-content;
-        width: fit-content;
-        padding: 0.5rem;
-        background: transparent;
-      }
-
-      .launch-button:hover {
-        background: var(--text-primary);
-      }
-
-      .launch-button:hover path {
-        fill: var(--bg-main);
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .site-header {
-          top: 1.5rem;
-          left: 1.5rem;
-          right: 1.5rem;
-        }
-
-        .logo-button img {
-          height: 32px;
-          width: auto;
-          max-width: none;
-        }
-
-        .hero__title {
-          font-size: 3.5rem;
-          min-height: 4.5rem;
-        }
-
-        .countdown__item {
-          min-width: 80px;
-        }
-
-        .countdown__value {
-          font-size: 2.8rem;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .hero__title {
-          font-size: 2.5rem;
-          min-height: 3.5rem;
-        }
-
-        .countdown__item {
-          min-width: 60px;
-        }
-
-        .countdown__value {
-          font-size: 2rem;
-        }
-      }
-    </style>
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="./assets/images/framing_2.png"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="./assets/images/framing_1.png"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="stylesheet" href="./assets/styles/pages/home.css" />
   </head>
   <body>
-    <header class="site-header">
-      <!-- Team Logo -->
-      <div class="site-header__logo">
-        <button
-          class="logo-button"
-          id="teamLogoBtn"
-          type="button"
-          title="TEAM FRAMING"
-        >
-          <img
-            src="./assets/images/framing_horizontal_2.png"
-            alt="TEAMFRAMING 로고"
-          />
-        </button>
-      </div>
-
-      <!-- Navigation & Controls -->
-      <nav class="site-nav">
-        <div class="site-nav__group">
-          <button
-            class="site-nav__button"
-            id="githubToggle"
-            type="button"
-            title="GitHub Contributor"
-          >
-            <svg viewBox="0 0 24 24">
+    <!-- Header & Navigation -->
+    <header id="site-header">
+      <nav aria-label="메인 메뉴">
+        <div class="nav-logo">
+          <a href="/" aria-label="홈으로 이동">
+            <svg
+              width="160"
+              height="24"
+              viewBox="0 0 1280 192"
+              fill="none"
+              style="color: var(--text-color)"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M300.601 54.3039L265.768 54.3317H243.542V168H186.857V24H358.61V69.7932C358.671 70.7261 358.702 71.6717 358.702 72.6301C358.702 73.587 358.671 74.5304 358.61 75.461V113.989H321.749L363.046 164.551L433.079 24H510.201L581.952 168H520.642L472.61 62.6848H470.819L422.637 168H303.956L265.704 119.967V90.3313H300.601V54.3039ZM1251.05 168H1050.38V24H1251.05V54.3039H1107.06V137.696H1194.37V111.152H1152.18V80.8479H1251.05V168ZM28.9443 24H179.458V54.53H85.6292V80.6849H170.209V111.216H85.6292V168H28.9443V24ZM602.534 24L645.256 107.635L696.72 24H767.427V168H711.936V83.2709H710.145L661.068 166.906H618.855L544.581 24H602.534ZM838.075 168H781.39V24H838.075V168ZM1037.76 168H990.17L910.065 90.3313H908.573V168H851.888V24H900.369L979.28 101.469H981.071V24H1037.76V168Z"
+                fill="currentColor"
               />
             </svg>
-          </button>
-        </div>
-
-        <!-- GitHub Dropdown -->
-        <div class="dropdown-menu" id="githubDropdown">
-          <a
-            href="https://github.com/logicsurgeon"
-            target="_blank"
-            class="dropdown-menu__item"
-          >
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              />
-            </svg>
-            <div class="dropdown-menu__info">
-              <div class="dropdown-menu__name">LogicSurgeon</div>
-              <div class="dropdown-menu__role">Orthopedic surgeon</div>
-            </div>
-          </a>
-          <a
-            href="https://github.com/Stylechoi"
-            target="_blank"
-            class="dropdown-menu__item"
-          >
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              />
-            </svg>
-            <div class="dropdown-menu__info">
-              <div class="dropdown-menu__name">Stylechoi</div>
-              <div class="dropdown-menu__role">PM & Developer</div>
-            </div>
           </a>
         </div>
+        <ul class="nav-links">
+          <li><a href="#overview">아이템 개요</a></li>
+          <li><a href="#market">시장배경</a></li>
+          <li><a href="#products">제품 소개</a></li>
+          <li><a href="#how-it-works">프로세스</a></li>
+          <li><a href="#roadmap">로드맵</a></li>
+        </ul>
       </nav>
     </header>
 
     <main>
-      <section class="hero">
-        <div class="container">
-          <div class="hero__content">
-            <!-- Main Title with Typing Effect -->
-            <h1 class="hero__title">
-              <span id="typingText"></span>
-              <span class="hero__cursor" aria-hidden="true">|</span>
-            </h1>
-            <p class="hero__status">COMING SOON</p>
-
-            <!-- Countdown -->
-            <div class="countdown-wrapper">
-              <div class="countdown" role="timer" aria-label="Launch countdown">
-                <div class="countdown__item">
-                  <span class="countdown__value" id="days">00</span>
-                  <span class="countdown__label">Days</span>
-                </div>
-                <span class="countdown__separator" aria-hidden="true">:</span>
-                <div class="countdown__item">
-                  <span class="countdown__value" id="hours">00</span>
-                  <span class="countdown__label">Hours</span>
-                </div>
-                <span class="countdown__separator" aria-hidden="true">:</span>
-                <div class="countdown__item">
-                  <span class="countdown__value" id="minutes">00</span>
-                  <span class="countdown__label">Min</span>
-                </div>
-                <span class="countdown__separator" aria-hidden="true">:</span>
-                <div class="countdown__item">
-                  <span class="countdown__value" id="seconds">00</span>
-                  <span class="countdown__label">Sec</span>
-                </div>
-              </div>
-            </div>
-            <a
-              href="./surgiflow-product.html"
-              class="launch-button"
+      <!-- HERO Section -->
+      <section
+        id="hero"
+        aria-la
+        class="section-template"
+        belledby="hero-heading"
+      >
+        <div class="hero-content">
+          <p class="hero-eyebrow">AI 수술 데이터 관리 플랫폼</p>
+          <h1 id="hero-heading">
+            <svg
+              width="640"
+              height="144"
+              viewBox="0 0 1280 288"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
               aria-label="서지플로우"
             >
-              <svg
-                width="320"
-                height="72"
-                viewBox="0 0 1280 288"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M700.865 196.912L693.438 218.019H616.176L616.134 218.135H539.606L549.132 191.962H574.669L609.594 96.0076H491.294L456.401 191.878H490.105L500.401 163.59H484.252L493.759 137.407H542.608L517.806 205.549C515.119 212.932 507.975 218.019 500.295 218.019H369.691C364.286 218.019 359.391 215.481 356.472 211.165C353.553 206.848 352.948 201.254 354.839 196.059L371.429 150.478H343.013L318.43 218.019H285.753L330.162 96.0076H310.267L270.397 205.549C267.71 212.932 260.566 218.019 252.886 218.019H176.347C170.942 218.019 166.047 215.481 163.127 211.165C160.208 206.848 159.603 201.254 161.494 196.059L197.91 96.0076H118.629L108.318 124.336H147.659C153.064 124.336 157.959 126.875 160.879 131.191C163.798 135.508 164.403 141.101 162.512 146.297L140.945 205.549C138.258 212.932 131.114 218.019 123.434 218.019H37.0507L46.5654 191.878H113.245L128.313 150.478H88.9718C83.5674 150.478 78.6722 147.94 75.7527 143.623C72.8332 139.307 72.2284 133.713 74.1193 128.518L90.9282 82.3358C93.6152 74.9533 100.759 69.866 108.439 69.866H217.257C222.661 69.866 227.556 72.4041 230.476 76.7206C233.395 81.0371 234 86.6308 232.109 91.826L195.693 191.878H242.697L282.566 82.3358C285.254 74.9533 292.398 69.866 300.078 69.866H421.176C426.581 69.866 431.476 72.4041 434.395 76.7206C437.315 81.0371 437.919 86.6308 436.028 91.826L418.38 140.314C416.19 146.331 410.367 150.478 404.106 150.478L389.038 191.878H423.723L463.593 82.3358C466.28 74.9533 473.424 69.866 481.104 69.866H677.343L667.829 96.0076H642.271L607.377 191.878H670.02L709.869 82.3939C712.556 75.0114 719.7 69.9241 727.38 69.9241H831.373C836.778 69.9241 841.673 72.4622 844.592 76.7788C847.512 81.0953 848.117 86.6889 846.226 91.8841L809.81 191.936H880.268L920.138 82.3939C922.825 75.0114 929.969 69.9241 937.649 69.9241H1101.24C1106.64 69.9241 1111.54 72.4622 1114.46 76.7788C1117.38 81.0953 1117.98 86.6889 1116.09 91.8841L1079.67 191.936H1105.48L1149.88 69.9241H1182.56L1138.15 191.936H1165.87L1210.28 69.9241H1242.95L1193.57 205.607C1190.88 212.99 1183.74 218.077 1176.06 218.077H1060.33C1054.92 218.077 1050.03 215.539 1047.11 211.223C1044.19 206.906 1043.59 201.312 1045.48 196.117L1081.89 96.0656H1038.09L998.225 205.607C995.538 212.99 988.394 218.077 980.713 218.077H790.463C785.058 218.077 780.163 215.539 777.244 211.223C774.325 206.906 773.72 201.312 775.611 196.117L812.027 96.0656H737.57L724.881 130.93H776.779L767.265 157.071H715.366L700.865 196.912ZM947.839 96.0656L912.945 191.936H970.523L1005.42 96.0656H947.839ZM401.829 96.0076H362.838L352.527 124.336H391.518L401.829 96.0076Z"
-                  fill="white"
-                />
-              </svg>
-            </a>
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M700.865 196.913L693.438 218.019H616.176L616.134 218.136H539.606L549.132 191.963H574.669L609.594 96.0078H491.295L456.401 191.878H490.105L500.401 163.591H484.252L493.759 137.408H542.608L517.806 205.55C515.119 212.932 507.975 218.019 500.295 218.019H369.692C364.287 218.019 359.391 215.481 356.472 211.165C353.553 206.848 352.948 201.255 354.839 196.059L371.429 150.478H343.013L318.43 218.019H285.753L330.162 96.0078H310.267L270.397 205.55C267.71 212.932 260.566 218.019 252.886 218.019H176.347C170.942 218.019 166.047 215.481 163.127 211.165C160.208 206.848 159.603 201.255 161.494 196.059L197.91 96.0078H118.629L108.319 124.337H147.659C153.064 124.337 157.959 126.875 160.879 131.191C163.798 135.508 164.403 141.102 162.512 146.297L140.946 205.55C138.259 212.932 131.115 218.019 123.434 218.019H37.0508L46.5655 191.878H113.245L128.313 150.478H88.972C83.5675 150.478 78.6724 147.94 75.7529 143.624C72.8333 139.307 72.2285 133.713 74.1194 128.518L90.9283 82.3361C93.6154 74.9535 100.759 69.8662 108.44 69.8662H217.257C222.661 69.8662 227.556 72.4043 230.476 76.7208C233.395 81.0374 234 86.631 232.109 91.8263L195.693 191.878H242.697L282.567 82.3361C285.254 74.9535 292.398 69.8662 300.078 69.8662H421.176C426.581 69.8662 431.476 72.4043 434.395 76.7208C437.315 81.0374 437.919 86.631 436.029 91.8263L418.38 140.314C416.19 146.332 410.367 150.478 404.106 150.478L389.038 191.878H423.723L463.593 82.3361C466.28 74.9535 473.424 69.8662 481.105 69.8662H677.344L667.829 96.0078H642.271L607.377 191.878H670.02L709.869 82.3942C712.556 75.0116 719.7 69.9243 727.38 69.9243H831.373C836.778 69.9243 841.673 72.4625 844.592 76.779C847.512 81.0955 848.117 86.6891 846.226 91.8844L809.81 191.936H880.268L920.138 82.3942C922.825 75.0116 929.969 69.9243 937.649 69.9243H1101.24C1106.64 69.9243 1111.54 72.4625 1114.46 76.779C1117.38 81.0955 1117.98 86.6891 1116.09 91.8844L1079.67 191.936H1105.48L1149.88 69.9243H1182.56L1138.15 191.936H1165.87L1210.28 69.9243H1242.95L1193.57 205.608C1190.88 212.99 1183.74 218.078 1176.06 218.078H1060.33C1054.92 218.078 1050.03 215.539 1047.11 211.223C1044.19 206.906 1043.59 201.313 1045.48 196.117L1081.89 96.0659H1038.09L998.225 205.608C995.538 212.99 988.394 218.078 980.714 218.078H790.463C785.058 218.078 780.163 215.539 777.244 211.223C774.325 206.906 773.72 201.313 775.611 196.117L812.027 96.0659H737.57L724.881 130.93H776.78L767.265 157.072H715.366L700.865 196.913ZM947.839 96.0659L912.945 191.936H970.524L1005.42 96.0659H947.839ZM401.829 96.0078H362.838L352.528 124.337H391.519L401.829 96.0078Z"
+                fill="#2C5078"
+              />
+            </svg>
+          </h1>
+          <p class="hero-description">
+            별도의 추가 업무 없이 완벽한 디지털 전환을 이끄는 LLM 기반 수술 관리
+            플랫폼, 서지플로우 입니다.
+          </p>
+          <div class="hero-cta">
+            <a href="#overview" class="btn-transparent">↓</a>
           </div>
         </div>
       </section>
+
+      <!-- 1. 개요 -->
+      <section
+        id="overview"
+        ari
+        class="section-template"
+        a-labelledby="overview-heading"
+      >
+        <h2 id="overview-heading">개요</h2>
+        <div class="content-wrapper">
+          <article class="core-value">
+            <h3>핵심 가치: '최소 입력, 최대 자동화'</h3>
+            <p>
+              의사의 일상적인 진료 행위만으로 수술 데이터가 자동으로
+              구조화됩니다. 서지플로우는 의료진의 기존 워크플로우를 전혀
+              방해하지 않습니다.
+            </p>
+          </article>
+
+          <aside class="target-customers">
+            <h3>목표 고객</h3>
+            <ul>
+              <li>
+                <strong>정형외과 전문의:</strong> 국내 약 3,000명 (핵심 타겟)
+              </li>
+              <li>
+                <strong>수술 환자 및 보호자:</strong> 디지털 사후 관리가 필요한
+                환자군
+              </li>
+              <li>
+                <strong>병원 B2B:</strong> 수술 데이터의 체계적인 자산화가
+                필요한 중대형 병원
+              </li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- 2. 시장 배경 및 페인 포인트 -->
+      <section
+        id="market"
+        aria-
+        class="section-template"
+        labelledby="market-heading"
+      >
+        <h2 id="market-heading">시장 배경</h2>
+
+        <div class="market-size-grid">
+          <article class="market-card img-world">
+            <h3>TAM (Global)</h3>
+            <p class="price">$32.9B</p>
+            <p class="desc">
+              2031년 글로벌 수술 디지털 플랫폼 및 EMR 시장 규모
+            </p>
+          </article>
+          <article class="market-card img-korea">
+            <h3>SAM (Korea)</h3>
+            <p class="price">2,000억 원</p>
+            <p class="desc">국내 외과 계열 수술 데이터 관리 시장 규모</p>
+          </article>
+          <article class="market-card img-medical">
+            <h3>SOM (Initial 3Y)</h3>
+            <p class="price">30억 원</p>
+            <p class="desc">
+              국내 2·3차 병원 정형외과 전문의 500명 대상 초기 목표 매출
+            </p>
+          </article>
+        </div>
+
+        <div class="pain-points-table-wrapper">
+          <h3>정보 단절의 페인 포인트</h3>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">의료진 (정보 단절 및 업무 과중)</th>
+                <th scope="col">환자 (정보 공백 및 불안감 증대)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="mobile-card-header">
+                    의료진 (정보 단절 및 업무 과중)
+                  </div>
+                  <ul>
+                    <li>수술 스케줄을 원내 EMR에서만 확인해야 하는 한계</li>
+                    <li>
+                      수백 건의 관절경 영상 데이터를 수동으로 탐색 및 분류
+                    </li>
+                    <li>
+                      연구 및 통계 산출을 위한 비효율적인 수기 데이터 입력
+                    </li>
+                  </ul>
+                </td>
+                <td>
+                  <div class="mobile-card-header">
+                    환자 (정보 공백 및 불안감 증대)
+                  </div>
+                  <ul>
+                    <li>
+                      퇴원 시 제공되는 종이 안내문의 높은 분실률 (40% 이상)
+                    </li>
+                    <li>
+                      퇴원 후 다음 외래 진료까지 발생하는 2~4주간의 정보
+                      사각지대
+                    </li>
+                    <li>
+                      회복 과정의 불안감으로 인한 불필요한 응급실 방문 증가
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. 제품 소개 (Products) -->
+      <section
+        id="products"
+        ari
+        class="section-template"
+        a-labelledby="products-heading"
+      >
+        <h2 id="products-heading">세 가지 제품, 하나의 플랫폼</h2>
+        <div class="product-grid">
+          <article class="product-item" id="prod-doctor">
+            <header>
+              <span class="prod-tag">Product 01</span>
+              <h3>의사용 모바일 앱</h3>
+            </header>
+            <p>
+              모바일 스케줄 뷰어, 30초 간편 케이스 입력, LLM 기반 수술 기록 자동
+              구조화 및 맞춤형 패턴 리포트 제공.
+            </p>
+          </article>
+
+          <article class="product-item" id="prod-patient">
+            <header>
+              <span class="prod-tag">Product 02</span>
+              <h3>환자용 모바일 앱</h3>
+            </header>
+            <p>
+              환자 맞춤형 재활 프로토콜, 시각화된 X-ray 회복 타임라인, 시점별
+              운동 가이드 제공으로 퇴원 후 불안감 해소.
+            </p>
+          </article>
+
+          <article class="product-item" id="prod-pc">
+            <header>
+              <span class="prod-tag">Product 03</span>
+              <h3>PC 로컬 영상 아카이빙</h3>
+            </header>
+            <p>
+              관절경 영상 자동 연동 및 백업, OCR/NLP 기술을 활용한 술식·임플란트
+              키워드 기반 즉각적인 데이터 검색.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 4. 서비스 프로세스 (How It Works) -->
+      <section
+        id="how-it-works"
+        class="section-template"
+        aria-labelledby="process-heading"
+      >
+        <h2 id="process-heading">서비스 프로세스</h2>
+        <ol class="process-list">
+          <li>
+            <strong>의사 입력:</strong>
+            <span
+              >술식, 사용 임플란트 등 핵심 수술 정보를 30초 내외로 간편하게
+              입력</span
+            >
+          </li>
+          <li>
+            <strong>QR 생성:</strong>
+            <span
+              >비식별화된 케이스 번호를 기반으로 환자 전용 고유 QR 코드 자동
+              발급</span
+            >
+          </li>
+          <li>
+            <strong>환자 전달:</strong>
+            <span
+              >의료진이 퇴원 교육 시 환자에게 QR 코드가 포함된 안내문 전달</span
+            >
+          </li>
+          <li>
+            <strong>자동 연결:</strong>
+            <span
+              >환자가 QR 스캔 시 앱으로 연결되며, 본인 상태에 맞는 맞춤형 재활
+              프로토콜 자동 수신</span
+            >
+          </li>
+        </ol>
+      </section>
+
+      <!-- 5. 로드맵 및 규제 대응 -->
+      <section
+        id="roadmap"
+        aria
+        class="section-template"
+        -labelledby="roadmap-heading"
+      >
+        <h2 id="roadmap-heading">성장 로드맵 및 규제 전략</h2>
+        <div class="roadmap-timeline">
+          <article class="roadmap-step">
+            <time datetime="2026-12">2026.12</time>
+            <h3>Phase 0~1: 비의료기기 MVP</h3>
+            <p>
+              모바일 스케줄 뷰어, 영상 아카이빙, 키워드 검색 기능 출시 (인허가
+              리스크가 없는 비의료기기 모델).
+            </p>
+          </article>
+          <article class="roadmap-step">
+            <time datetime="2027">2027</time>
+            <h3>Phase 1: 경량 자동화</h3>
+            <p>
+              LLM 기반 수술 기록 구조화 및 패턴 리포트 제공 (비의료기기 포지션
+              유지).
+            </p>
+          </article>
+          <article class="roadmap-step">
+            <time datetime="2028">2028</time>
+            <h3>Phase 2: 예측 도입</h3>
+            <p>
+              수술 시간 예측 및 수술실(OR) 스케줄 최적화 AI 모델 도입 (SaMD
+              진입, IRB 승인 목표).
+            </p>
+          </article>
+          <article class="roadmap-step">
+            <time datetime="2029">2029~</time>
+            <h3>Phase 3~4: 플랫폼화</h3>
+            <p>
+              환자 예후 및 회복 예측 모델 구축, 병원 EMR 직접 연동 및 글로벌
+              시장(일본, 동남아, 미국) 진출.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 6. 인력 및 검증 현황 -->
+      <section
+        id="verification"
+        class="section-template"
+        aria-labelledby="verification-heading"
+      >
+        <h2 id="verification-heading">팀 역량 및 검증 현황</h2>
+        <div class="verification-content">
+          <article class="team-info">
+            <h3>팀 구성</h3>
+            <p>
+              AI 분야 8년 경력의 기계공학 석사 CTO 및 Upstage SOLAR LLM 핵심
+              개발자의 기술 자문 참여.
+            </p>
+          </article>
+          <article class="assets-info">
+            <h3>보유 자산 및 파트너십</h3>
+            <ul>
+              <li>국내 특허 2건 등록 완료 및 PCT(국제 특허) 1건 출원 중</li>
+              <li>
+                단국대학교병원 정형외과를 포함한 전문의 8인의 구매의향서(LOI)
+                확보
+              </li>
+              <li>브이앤에스자산운용 투자의향서(LOI) 확보</li>
+            </ul>
+          </article>
+        </div>
+      </section>
     </main>
-  </body>
 
-  <script>
-    /**
-     * TEAM FRAMING Configuration
-     */
-    const TF_CONFIG = {
-      typing: {
-        texts: ["AI HEALTHCARE", "TEAMFRAMING", "SURGIFLOW"],
-        targetId: "typingText",
-        modes: {
-          normal: {
-            typeSpeed: 100,
-            deleteSpeed: 60,
-            pauseAfterType: 2500,
-            pauseAfterDelete: 500,
-          },
-          attack: {
-            typeSpeed: 60,
-            deleteSpeed: 30,
-            pauseAfterType: 600,
-            pauseAfterDelete: 120,
-          },
+    <!-- Footer -->
+    <footer id="site-footer">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <svg
+            width="160"
+            height="24"
+            viewBox="0 0 1280 192"
+            fill="none"
+            style="color: var(--text-color)"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M300.601 54.3039L265.768 54.3317H243.542V168H186.857V24H358.61V69.7932C358.671 70.7261 358.702 71.6717 358.702 72.6301C358.702 73.587 358.671 74.5304 358.61 75.461V113.989H321.749L363.046 164.551L433.079 24H510.201L581.952 168H520.642L472.61 62.6848H470.819L422.637 168H303.956L265.704 119.967V90.3313H300.601V54.3039ZM1251.05 168H1050.38V24H1251.05V54.3039H1107.06V137.696H1194.37V111.152H1152.18V80.8479H1251.05V168ZM28.9443 24H179.458V54.53H85.6292V80.6849H170.209V111.216H85.6292V168H28.9443V24ZM602.534 24L645.256 107.635L696.72 24H767.427V168H711.936V83.2709H710.145L661.068 166.906H618.855L544.581 24H602.534ZM838.075 168H781.39V24H838.075V168ZM1037.76 168H990.17L910.065 90.3313H908.573V168H851.888V24H900.369L979.28 101.469H981.071V24H1037.76V168Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <div class="footer-contact">
+          <p>
+            Framing | 대구 북구 연경지묘로 2, 1동 4층 405-n132호(연경동962-3)
+          </p>
+        </div>
+        <p class="copyright">&copy; 2026 Framing. All rights reserved.</p>
+      </div>
+    </footer>
+    <!-- Header Scroll Script -->
+    <script>
+      const header = document.getElementById("site-header");
+      const SCROLL_THRESHOLD = 20;
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          const isScrolled = window.scrollY > SCROLL_THRESHOLD;
+          header.classList.toggle("scrolled", isScrolled);
         },
-      },
-      countdown: {
-        storageKeys: {
-          mode: "tf_mode",
-          launchTime: "tf_launch",
-          attackSeconds: "tf_attack_sec",
-        },
-        defaults: {
-          launchDays: 40,
-          attackSeconds: 30,
-        },
-        timeUnits: [
-          { id: "days", durationMs: 86400000 },
-          { id: "hours", durationMs: 3600000 },
-          { id: "minutes", durationMs: 60000 },
-          { id: "seconds", durationMs: 1000 },
-        ],
-      },
-      ui: {
-        dropdownId: "githubDropdown",
-        toggleId: "githubToggle",
-        logoId: "teamLogoBtn",
-      },
-    };
-
-    /**
-     * Typing Effect Logic
-     */
-    function initTypingEffect() {
-      const { texts, targetId, modes } = TF_CONFIG.typing;
-      const typingElement = document.getElementById(targetId);
-      if (!typingElement) return;
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const isAttackMode =
-        urlParams.get("timeattack") === "1" ||
-        urlParams.get("timeattack") === "true";
-      const timing = modes[isAttackMode ? "attack" : "normal"];
-
-      let state = { textIndex: 0, charIndex: 0, isDeleting: false };
-
-      function tick() {
-        const fullText = texts[state.textIndex];
-        const { charIndex, isDeleting } = state;
-
-        if (!isDeleting && charIndex === fullText.length) {
-          state.isDeleting = true;
-          return setTimeout(tick, timing.pauseAfterType);
-        }
-
-        if (isDeleting && charIndex === 0) {
-          state.isDeleting = false;
-          state.textIndex = (state.textIndex + 1) % texts.length;
-          return setTimeout(tick, timing.pauseAfterDelete);
-        }
-
-        state.charIndex += isDeleting ? -1 : 1;
-        typingElement.textContent = fullText.substring(0, state.charIndex);
-
-        setTimeout(tick, isDeleting ? timing.deleteSpeed : timing.typeSpeed);
-      }
-
-      tick();
-    }
-
-    /**
-     * Countdown Timer Logic
-     */
-    function initCountdown() {
-      const { storageKeys, defaults, timeUnits } = TF_CONFIG.countdown;
-      const urlParams = new URLSearchParams(window.location.search);
-      const isAttackMode =
-        urlParams.get("timeattack") === "1" ||
-        urlParams.get("timeattack") === "true";
-      const attackSeconds = Number(
-        urlParams.get("timeattack_seconds") || defaults.attackSeconds,
+        { passive: true },
       );
-
-      const getLaunchTime = () => {
-        const now = Date.now();
-        try {
-          const storedMode = localStorage.getItem(storageKeys.mode);
-          const storedLaunchTime = Number(
-            localStorage.getItem(storageKeys.launchTime),
-          );
-          const storedAttackSeconds = Number(
-            localStorage.getItem(storageKeys.attackSeconds),
-          );
-
-          const isMatchingState = isAttackMode
-            ? storedMode === "attack" && storedAttackSeconds === attackSeconds
-            : storedMode === "default";
-
-          if (isMatchingState && !isNaN(storedLaunchTime))
-            return storedLaunchTime;
-
-          const newLaunchTime =
-            now +
-            (isAttackMode ? attackSeconds : defaults.launchDays * 24 * 3600) *
-              1000;
-          localStorage.setItem(
-            storageKeys.mode,
-            isAttackMode ? "attack" : "default",
-          );
-          localStorage.setItem(storageKeys.launchTime, newLaunchTime);
-
-          if (isAttackMode) {
-            localStorage.setItem(storageKeys.attackSeconds, attackSeconds);
-          } else {
-            localStorage.removeItem(storageKeys.attackSeconds);
-          }
-          return newLaunchTime;
-        } catch {
-          return (
-            now +
-            (isAttackMode ? attackSeconds : defaults.launchDays * 24 * 3600) *
-              1000
-          );
-        }
-      };
-
-      const launchTimestamp = getLaunchTime();
-      const timerInterval = setInterval(() => {
-        const timeDifference = launchTimestamp - Date.now();
-
-        if (timeDifference < 0) {
-          clearInterval(timerInterval);
-          const countdownContainer = document.querySelector(".countdown");
-          if (countdownContainer)
-            countdownContainer.innerHTML = "<h2>LAUNCHED!</h2>";
-          return;
-        }
-
-        let remainingMs = timeDifference;
-        timeUnits.forEach((unit) => {
-          const unitValue = Math.floor(remainingMs / unit.durationMs);
-          remainingMs %= unit.durationMs;
-          const unitElement = document.getElementById(unit.id);
-          if (unitElement) {
-            unitElement.textContent = String(Math.max(0, unitValue)).padStart(
-              2,
-              "0",
-            );
-          }
-        });
-      }, 1000);
-    }
-
-    /**
-     * UI Events & Interactions
-     */
-    function initUIEvents() {
-      const { dropdownId, toggleId, logoId } = TF_CONFIG.ui;
-      const dropdown = document.getElementById(dropdownId);
-      if (!dropdown) return;
-
-      const handlers = {
-        toggle: (e) => {
-          e.stopPropagation();
-          dropdown.classList.toggle("show");
-        },
-        close: () => dropdown.classList.remove("show"),
-        reload: (e) => {
-          e.stopPropagation();
-          location.reload();
-        },
-      };
-
-      const eventBindings = [
-        { id: toggleId, type: "click", handler: handlers.toggle },
-        { id: logoId, type: "click", handler: handlers.reload },
-        { target: document, type: "click", handler: handlers.close },
-      ];
-
-      eventBindings.forEach((binding) => {
-        const targetElement =
-          binding.target || document.getElementById(binding.id);
-        if (targetElement) {
-          targetElement.addEventListener(binding.type, binding.handler);
-        }
-      });
-    }
-
-    // Initialize all components on load
-    document.addEventListener("DOMContentLoaded", () => {
-      initTypingEffect();
-      initCountdown();
-      initUIEvents();
-    });
-  </script>
+    </script>
+  </body>
 </html>
