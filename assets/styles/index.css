@@ -21,7 +21,7 @@ body {
   --brand-primary: #2c5078;
   --brand-primary-bright: #4a7bb1;
 
-  /* Light Theme */
+  /* Theme Colors (Light default) */
   --bg-color: #ffffff;
   --text-color: #0e0e0e;
   --text-sub: #606060;
@@ -29,20 +29,82 @@ body {
   --primary-color: var(--brand-primary);
   --glass: rgba(255, 255, 255, 0.3);
 
+  /* Spacing Tokens */
+  --space-unit: 1rem;
+  --space-xs: calc(var(--space-unit) * 0.5); /* 8px */
+  --space-sm: var(--space-unit); /* 16px */
+  --space-md: calc(var(--space-unit) * 2); /* 32px */
+  --space-lg: calc(var(--space-unit) * 4); /* 64px */
+  --space-xl: calc(var(--space-unit) * 8); /* 128px */
+  --container-width: 1200px;
+  --section-padding: var(--space-xl) 2rem;
+
+  /* Typography Tokens */
+  --font-h1: 4.5rem;
+  --font-h2: 2.75rem;
+  --font-h3: 1.6rem;
+  --font-body: 1rem;
+  --font-small: 0.85rem;
+
   /* Transitions */
   --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark Theme */
     --bg-color: #0e0e0e;
     --text-color: #ffffff;
     --text-sub: #bababa;
     --border-color: #202020;
     --glass: rgba(15, 15, 15, 0.3);
     --primary-color: var(--brand-primary-bright);
+    --section-bg: #151515;
   }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 6rem 1.5rem;
+    --font-h1: 3rem;
+    --font-h2: 2.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --section-padding: 4rem 1.25rem;
+    --font-h1: 2.5rem;
+    --font-h2: 1.85rem;
+    --font-h3: 1.4rem;
+  }
+}
+
+/* 2. Base Styles */
+body {
+  font-family: "Pretendard", sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Base typography elements inherit word-break */
+h1,
+h2,
+h3,
+h4,
+p,
+li,
+th,
+td,
+span,
+strong,
+a,
+time {
+  word-break: inherit;
+  overflow-wrap: inherit;
 }
 
 /* 2. Scrollbar */
