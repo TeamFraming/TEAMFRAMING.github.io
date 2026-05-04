@@ -339,14 +339,6 @@ p {
 .highlight {
   color: var(--primary-color);
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--brand-primary-bright) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .market-card::before {
