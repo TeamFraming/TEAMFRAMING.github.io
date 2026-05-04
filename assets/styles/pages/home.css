@@ -224,6 +224,7 @@ p {
   align-items: center;
   gap: 2rem;
   margin-top: 4rem;
+  background: transparent;
 }
 
 #hero-heading {

@@ -17,6 +17,7 @@ body {
 }
 
 :root {
+  color-scheme: light dark;
   /* Brand Colors */
   --brand-primary: #2c5078;
   --brand-primary-bright: #4a7bb1;
