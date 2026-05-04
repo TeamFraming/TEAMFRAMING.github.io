@@ -237,7 +237,7 @@ p {
 .market-card {
   position: relative;
   overflow: hidden;
-  padding: 6rem 3rem;
+  padding: 4rem 3rem;
   background-color: var(--bg-color);
   display: flex;
   flex-direction: column;
@@ -279,7 +279,7 @@ p {
   background-image: url("../../images/medical_image_1.jpg");
 }
 
-.market-card .price {
+.market-card .value {
   font-size: var(--font-h2);
   font-weight: 800;
   color: var(--primary-color);
@@ -293,7 +293,6 @@ p {
 
 .section-subheadline {
   font-size: 1.25rem;
-  max-width: 800px;
   line-height: 1.5;
 }
 
@@ -542,7 +541,7 @@ p {
     padding: var(--space-lg) var(--space-sm);
   }
 
-  .market-card .price {
+  .market-card .value {
     font-size: 2.25rem;
   }
 
