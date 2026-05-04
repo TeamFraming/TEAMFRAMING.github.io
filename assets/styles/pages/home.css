@@ -47,7 +47,7 @@
   text-decoration: none;
   color: var(--text-color);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: var(--transition-smooth);
 }
 
@@ -65,12 +65,13 @@
 }
 
 /* ─── Global Section & Typography ─── */
-section {
+.section-template {
   padding: var(--section-padding);
   background-color: var(--bg-color);
   color: var(--text-color);
-  border-bottom: 1px solid var(--border-color);
-  min-height: 100vh;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
 }
 
 section .container {
@@ -93,6 +94,7 @@ h3 {
 
 p {
   color: var(--text-sub);
+  line-height: 1.8;
 }
 
 /* ─── Hero Section ─── */
@@ -140,6 +142,7 @@ p {
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  margin-top: 6rem;
 }
 
 #hero-heading {
@@ -149,6 +152,7 @@ p {
   font-size: var(--font-h1);
   line-height: 1.25;
   font-weight: 800;
+  margin-bottom: 2rem;
 }
 
 #hero-heading svg {
@@ -171,10 +175,10 @@ p {
 }
 
 .hero-description {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   color: var(--text-sub);
   max-width: 720px;
-  line-height: 1.5;
+  line-height: 1.75;
 }
 
 .hero-description svg {
@@ -199,16 +203,16 @@ p {
 }
 
 .hero-headline {
-  font-size: 3rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.5;
   color: var(--text-color);
   letter-spacing: -0.04em;
 }
 
 @media (max-width: 768px) {
   .hero-headline {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -287,22 +291,15 @@ p {
   line-height: 1.5;
 }
 
-.lead-paragraph {
-  font-size: 1.4rem;
+.section-subheadline {
+  font-size: 1.25rem;
   max-width: 800px;
   line-height: 1.5;
 }
 
-.section-subheadline {
-  font-size: 1.25rem;
-  color: var(--text-sub);
-  max-width: 720px;
-  line-height: 1.5;
-}
-
 @media (max-width: 768px) {
-  .lead-paragraph {
-    font-size: 1.25rem;
+  .section-subheadline {
+    font-size: 1rem;
   }
 }
 
@@ -366,7 +363,7 @@ p {
   padding-left: 1.5rem;
   position: relative;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-color);
 }
 
@@ -518,7 +515,7 @@ p {
 
 .footer-contact p {
   color: #888888;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .copyright {
@@ -527,7 +524,7 @@ p {
 
 /* ─── Page Specific Responsive Tweaks ─── */
 @media (max-width: 480px) {
-  section {
+  .section-template {
     min-height: auto;
   }
 

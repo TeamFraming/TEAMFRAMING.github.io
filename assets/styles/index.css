@@ -12,7 +12,7 @@ body {
   font-family: "Pretendard", sans-serif;
   color: var(--text-color);
   background-color: var(--bg-color);
-  line-height: 1.6;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -40,9 +40,9 @@ body {
   --section-padding: var(--space-xl) 2rem;
 
   /* Typography Tokens */
-  --font-h1: 4.5rem;
-  --font-h2: 2.75rem;
-  --font-h3: 1.6rem;
+  --font-h1: 3.5rem;
+  --font-h2: 2.25rem;
+  --font-h3: 1.5rem;
   --font-body: 1rem;
   --font-small: 0.85rem;
 
@@ -84,7 +84,7 @@ body {
   font-family: "Pretendard", sans-serif;
   color: var(--text-color);
   background-color: var(--bg-color);
-  line-height: 1.6;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   overflow-wrap: break-word;
