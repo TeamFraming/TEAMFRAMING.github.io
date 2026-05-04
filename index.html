@@ -26,6 +26,19 @@
     <meta property="og:image" content="./assets/ogc.png" />
     <meta property="og:url" content="https://framing.co.kr/" />
     <meta property="og:site_name" content="Surgiflow" />
+    <meta
+      name="naver-site-verification"
+      content="9437b84d55980034fc4eb707f6a2e97124928476"
+    />
+
+    <!-- SEO: Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="프레이밍 - AI 의료 솔루션 서지플로우" />
+    <meta
+      name="twitter:description"
+      content="추가 업무 없이 디지털 전환되는 LLM 기반 수술 데이터 관리 플랫폼."
+    />
+    <meta name="twitter:image" content="./assets/ogc.png" />
 
     <!-- SEO: Canonical Link -->
     <link rel="canonical" href="https://framing.co.kr/" />
@@ -48,7 +61,7 @@
     <header id="site-header">
       <nav aria-label="메인 메뉴">
         <div class="nav-logo">
-          <a href="/" aria-label="홈으로 이동">
+          <a href="/" class="nav-home" aria-label="홈으로 이동">
             <svg
               width="160"
               height="24"
@@ -73,6 +86,11 @@
           <li><a href="#roadmap">Roadmap</a></li>
           <li><a href="#partnership">Partnership</a></li>
         </ul>
+        <button class="menu-toggle" aria-label="메뉴 열기/닫기">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </nav>
     </header>
 
@@ -82,6 +100,7 @@
         <div class="container">
           <div class="hero-content">
             <h1 id="hero-heading">
+              <span class="sr-only">프레이밍 서지플로우 - AI 의료 솔루션</span>
               <svg
                 viewBox="0 0 1280 288"
                 fill="none"
@@ -102,9 +121,15 @@
             </p>
 
             <p class="hero-description">
-              별도의 추가 입력 없이 완성되는 수술 디지털 전환.<br />
-              의료진을 위한 AI 기반 임상 워크플로우 플랫폼,
-              <strong class="highlight">서지플로우</strong>입니다.
+              <span class="hero-phrase"
+                >별도의 추가 입력 없이 완성되는 수술 디지털 전환.</span
+              >
+              <span class="hero-phrase"
+                >의료진을 위한 AI 기반 임상 워크플로우 플랫폼,</span
+              >
+              <span class="hero-phrase"
+                ><strong class="highlight">서지플로우</strong>입니다.</span
+              >
             </p>
           </div>
         </div>
@@ -352,7 +377,7 @@
               </ul>
             </article>
 
-            <article class="trust-item">
+            <article class="trust-item investment-item">
               <h3>Investment</h3>
               <p>
                 시장으로부터 검증된 신뢰. 국내 자산운용사로부터 투자의향을
@@ -382,6 +407,7 @@
             fill="none"
             style="color: var(--text-color)"
             xmlns="http://www.w3.org/2000/svg"
+            aria-label="프레이밍 로고"
           >
             <path
               fill-rule="evenodd"
@@ -392,21 +418,47 @@
           </svg>
         </div>
         <div class="footer-contact">
-          <p>
-            Framing - 대구 북구 연경지묘로 2, 1동 4층 405-n132호(연경동962-3)<br />
-            Email:
-            <a href="mailto:frchoi@framing.co.kr">frchoi@framing.co.kr</a>
-          </p>
+          <address>
+            <div class="contact-group">
+              <span class="label">ADDRESS:</span>
+              <span class="value"
+                >대구 북구 연경지묘로 2, 1동 4층 405-n132호(연경동962-3)</span
+              >
+            </div>
+            <div class="contact-group">
+              <span class="label">EMAIL:</span>
+              <span class="value">
+                <a href="mailto:frchoi@framing.co.kr">frchoi@framing.co.kr</a>
+              </span>
+            </div>
+          </address>
         </div>
         <p class="copyright">&copy; 2026 Framing. All rights reserved.</p>
       </div>
     </footer>
 
-    <!-- Header Scroll Script -->
+    <!-- Back to Top Button -->
+    <button id="back-to-top" aria-label="맨 위로 이동">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </button>
+
+    <!-- Header Scroll & Mobile Menu Script -->
     <script>
       const header = document.getElementById("site-header");
+      const menuToggle = document.querySelector(".menu-toggle");
+      const navLinks = document.querySelector(".nav-links");
       const SCROLL_THRESHOLD = 20;
 
+      // 스크롤 시 헤더 스타일 변경
       window.addEventListener(
         "scroll",
         () => {
@@ -415,6 +467,43 @@
         },
         { passive: true },
       );
+
+      // 모바일 메뉴 토글
+      menuToggle.addEventListener("click", () => {
+        menuToggle.classList.toggle("active");
+        navLinks.classList.toggle("active");
+        // 메뉴 열렸을 때 스크롤 방지
+        document.body.style.overflow = navLinks.classList.contains("active")
+          ? "hidden"
+          : "auto";
+      });
+
+      // 메뉴 링크 클릭 시 메뉴 닫기
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          menuToggle.classList.remove("active");
+          navLinks.classList.remove("active");
+          document.body.style.overflow = "auto";
+        });
+      });
+
+      // Back to Top 기능
+      const backToTop = document.getElementById("back-to-top");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.add("visible");
+        } else {
+          backToTop.classList.remove("visible");
+        }
+      });
+
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
     </script>
   </body>
 </html>

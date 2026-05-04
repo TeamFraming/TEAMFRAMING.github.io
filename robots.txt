@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://framing.co.kr/sitemap.xml

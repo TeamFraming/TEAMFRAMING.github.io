@@ -24,7 +24,7 @@ body {
   /* Theme Colors (Light default) */
   --bg-color: #ffffff;
   --text-color: #0e0e0e;
-  --text-sub: #606060;
+  --text-sub: #5f5f5f;
   --border-color: #e0e0e0;
   --primary-color: var(--brand-primary);
   --glass: rgba(255, 255, 255, 0.3);

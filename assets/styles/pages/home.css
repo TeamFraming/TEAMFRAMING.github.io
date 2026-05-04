@@ -1,5 +1,17 @@
 @import url(../index.css);
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* ─── Header & Navigation ─── */
 #site-header {
   position: fixed;
@@ -55,11 +67,80 @@
   color: var(--primary-color);
 }
 
+.nav-home {
+  display: flex;
+}
+
 @media (max-width: 1023px) {
   #site-header nav {
-    justify-content: center;
+    justify-content: space-between;
   }
+
+  /* 모바일 메뉴 버튼 (Hamburger) */
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+    padding: 0;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: var(--transition-smooth);
+  }
+
+  /* 메뉴 활성화 시 X 모양 애니메이션 */
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  /* 모바일 네비게이션 오버레이 */
   .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--bg-color);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    transform: translateX(100%);
+    margin-top: 0;
+    padding: 1rem;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1050;
+    display: flex; /* hidden 대신 transform으로 제어 */
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .nav-links a {
+    font-size: 1.5rem;
+  }
+}
+
+/* 데스크탑에서는 버튼 숨김 */
+@media (min-width: 1024px) {
+  .menu-toggle {
     display: none;
   }
 }
@@ -177,8 +258,19 @@ p {
 .hero-description {
   font-size: 1.25rem;
   color: var(--text-sub);
-  max-width: 720px;
-  line-height: 1.75;
+  max-width: 800px;
+  line-height: 1.8;
+  text-wrap: balance;
+}
+
+.hero-phrase {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-phrase {
+    display: inline;
+  }
 }
 
 .hero-description svg {
@@ -247,6 +339,14 @@ p {
 .highlight {
   color: var(--primary-color);
   font-weight: 800;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--brand-primary-bright) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .market-card::before {
@@ -449,6 +549,10 @@ p {
   gap: 1.5rem;
 }
 
+.investment-item {
+  gap: 1.25rem;
+}
+
 .trust-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -475,7 +579,6 @@ p {
 
 .trust-details strong {
   color: var(--text-color);
-  margin-right: 0.5rem;
 }
 
 @media (max-width: 1023px) {
@@ -512,9 +615,26 @@ p {
   min-height: 16px;
 }
 
-.footer-contact p {
-  color: #888888;
+.footer-contact address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--text-sub);
   font-size: 1rem;
+  font-style: normal;
+}
+
+.contact-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.contact-group .label {
+  font-weight: 700;
+  color: var(--text-color);
 }
 
 .copyright {
@@ -564,8 +684,62 @@ p {
     padding: var(--space-md) var(--space-sm);
   }
 
-  #site-footer .footer-contact p {
+  #site-footer .footer-contact address {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
     font-size: var(--font-small);
     text-align: center;
+  }
+
+  .contact-group {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* ─── Back to Top Button ─── */
+#back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  opacity: 0; /* 처음에는 숨김 */
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+#back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#back-to-top:hover {
+  transform: translateY(-5px);
+  background-color: var(--brand-primary-bright);
+}
+
+#back-to-top svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  #back-to-top {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 }
