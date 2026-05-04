@@ -73,17 +73,21 @@ section {
   min-height: 100vh;
 }
 
+section .container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
 h2 {
   font-size: var(--font-h2);
   font-weight: 800;
-  margin-bottom: var(--space-lg);
   color: var(--text-color);
 }
 
 h3 {
   font-size: var(--font-h3);
   font-weight: 700;
-  margin-bottom: var(--space-sm);
   color: var(--text-color);
 }
 
@@ -103,8 +107,10 @@ p {
   background-color: var(--bg-color);
   text-align: center;
   box-sizing: border-box;
+}
 
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
+  #hero {
     padding: var(--space-xl) 1.5rem;
   }
 }
@@ -211,11 +217,10 @@ p {
   border-color: var(--primary-color);
 }
 
-/* ─── Market & Pain Points ─── */
 .market-size-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-bottom: 5rem;
+  gap: 1rem;
 }
 
 @media (max-width: 1023px) {
@@ -230,6 +235,9 @@ p {
   overflow: hidden;
   padding: 6rem 3rem;
   background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .highlight {
@@ -271,13 +279,11 @@ p {
   font-size: var(--font-h2);
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 0.75rem;
 }
 
 .market-card .sub-desc {
   font-size: 0.9rem;
   color: var(--text-sub);
-  margin-top: 1rem;
   line-height: 1.5;
 }
 
@@ -285,14 +291,12 @@ p {
   font-size: 1.4rem;
   max-width: 800px;
   line-height: 1.5;
-  margin-bottom: 4rem;
 }
 
 .section-subheadline {
   font-size: 1.25rem;
   color: var(--text-sub);
   max-width: 720px;
-  margin-bottom: 4rem;
   line-height: 1.5;
 }
 
@@ -321,6 +325,15 @@ p {
   border: 1px solid var(--border-color);
   border-radius: 16px;
   transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.product-item header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .prod-tag {
@@ -328,18 +341,17 @@ p {
   font-size: 0.75rem;
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 1.5rem;
   padding: var(--space-xs) var(--space-sm);
   background-color: var(--bg-color);
   border: 1px solid var(--primary-color);
   border-radius: 4px;
   text-transform: uppercase;
+  width: fit-content;
 }
 
 .product-item p {
   font-size: 1rem;
   line-height: 1.5;
-  margin-bottom: 2rem;
 }
 
 .feature-list {
@@ -377,6 +389,9 @@ p {
   padding: 3rem 0;
   border-top: 1px solid var(--border-color);
   transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .tech-value-item:hover {
@@ -388,7 +403,6 @@ p {
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 1.5rem;
 }
 
 @media (max-width: 1023px) {
@@ -416,6 +430,9 @@ p {
   position: relative;
   padding-left: var(--space-md);
   border-left: 3px solid var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .roadmap-step time {
@@ -423,7 +440,6 @@ p {
   color: var(--primary-color);
   font-size: 1.25rem;
   display: block;
-  margin-bottom: 0.75rem;
 }
 
 .roadmap-step p {
@@ -431,6 +447,12 @@ p {
 }
 
 /* Trust & Partnership */
+.trust-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .trust-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -439,14 +461,12 @@ p {
 
 .trust-item h3 {
   font-size: 1.5rem;
-  margin-bottom: 1.5rem;
   color: var(--primary-color);
 }
 
 .trust-details {
   list-style: none;
   padding: 0;
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -518,16 +538,15 @@ p {
 
   .hero-description {
     font-size: 1rem;
-    margin-bottom: var(--space-md);
   }
 
   /* Market Size */
   .market-card {
     padding: var(--space-lg) var(--space-sm);
+  }
 
-    .price {
-      font-size: 2.25rem;
-    }
+  .market-card .price {
+    font-size: 2.25rem;
   }
 
   /* Products */
@@ -547,10 +566,10 @@ p {
   /* Footer */
   #site-footer {
     padding: var(--space-md) var(--space-sm);
+  }
 
-    .footer-contact p {
-      font-size: var(--font-small);
-      text-align: center;
-    }
+  #site-footer .footer-contact p {
+    font-size: var(--font-small);
+    text-align: center;
   }
 }
