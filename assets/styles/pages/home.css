@@ -524,7 +524,7 @@ p {
   gap: 0.75rem;
 }
 
-.roadmap-step time {
+.roadmap-step .roadmap-date {
   font-weight: 800;
   color: var(--primary-color);
   font-size: 1.25rem;
